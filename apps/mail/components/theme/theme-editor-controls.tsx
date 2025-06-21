@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Color from "color";
 import { AlertTriangle } from "lucide-react";
 import { COMMON_STYLES } from "@/config/theme";
+import { useTranslations } from "use-intl";
 
 const COLOR_KEYS: string[] = [
     "background",
@@ -62,6 +63,7 @@ function getContrastRatio(colA: string, colB: string): number {
 export default function ThemeEditorControls() {
     const { themeState, setThemeState } = useEditorStore();
     const mode = themeState.currentMode;
+    const t = useTranslations();
 
     const handleChange = (key: string, value: string) => {
         // If key is common style, update both light & dark
@@ -99,7 +101,7 @@ export default function ThemeEditorControls() {
             {/* Color section */}
             <div className="space-y-4">
                 <Badge variant="secondary" className="px-3 py-1.5 capitalize">
-                    Colors ({mode})
+                    {t("common.themeEditor.colorsTitle", { mode })}
                 </Badge>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {COLOR_KEYS.map((k) => {
@@ -131,7 +133,7 @@ export default function ThemeEditorControls() {
                                     onChange={(e) => handleChange(k, e.target.value)}
                                 />
                                 {lowContrast && (
-                                    <span title="Low contrast">
+                                    <span title={t("common.themeEditor.lowContrast")}>
                                         <AlertTriangle className="h-4 w-4 text-red-500" />
                                     </span>
                                 )}
@@ -169,7 +171,7 @@ export default function ThemeEditorControls() {
             {/* Radius section */}
             <div className="space-y-4">
                 <Badge variant="secondary" className="px-3 py-1.5 capitalize">
-                    Radius (rem)
+                    {t("common.themeEditor.radiusLabel")}
                 </Badge>
                 <div className="flex items-center gap-4">
                     <input

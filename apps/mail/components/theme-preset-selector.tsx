@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/select";
 
 import { colorFormatter } from "../lib/color-converter";
+import { useTranslations } from "use-intl";
 
 export function ThemePresetSelector() {
     const { themeState, applyThemePreset } = useEditorStore();
     const mode = themeState.currentMode;
     const presetNames = Object.keys(defaultPresets);
+    const t = useTranslations();
 
     const ColorBox = ({ color }: { color: string }) => (
         <div
@@ -25,7 +27,7 @@ export function ThemePresetSelector() {
     return (
         <div className="space-y-4">
             <p className="py-0 text-sm font-medium">
-                Theme Preset
+                {t("common.themeEditor.presetLabel")}
             </p>
 
             <Select
@@ -33,7 +35,7 @@ export function ThemePresetSelector() {
                 value={themeState.preset}
             >
                 <SelectTrigger className="w-64 capitalize">
-                    <SelectValue placeholder="Select a Preset" />
+                    <SelectValue placeholder={t("common.themeEditor.selectPreset")} />
                 </SelectTrigger>
                 <SelectContent className="w-64">
                     {presetNames.map((name) => {

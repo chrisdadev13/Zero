@@ -92,16 +92,16 @@ export function ThemeMarketplace() {
     if (error) {
         return (
             <div className="flex h-32 w-full items-center justify-center">
-                <p className="text-sm text-red-500">Failed to load themes.</p>
+                <p className="text-sm text-red-500">{t("common.themeEditor.failedToLoadThemes")}</p>
             </div>
         );
     }
 
     return (
         <div className="space-y-4">
-            <p className="text-sm font-medium">Marketplace</p>
+            <p className="text-sm font-medium">{t("common.themeEditor.marketplace")}</p>
             <Input
-                placeholder="Search for themes.."
+                placeholder={t("common.themeEditor.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
@@ -116,7 +116,7 @@ export function ThemeMarketplace() {
                 ))}
             </div>
             {filtered.length === 0 && (
-                <p className="text-muted-foreground text-sm">No themes found.</p>
+                <p className="text-muted-foreground text-sm">{t("common.themeEditor.noThemesFound")}</p>
             )}
         </div>
     );

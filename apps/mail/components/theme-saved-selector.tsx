@@ -13,10 +13,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
 import { Globe2, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 
 export function UserThemeSelector() {
     const trpc = useTRPC();
     const { themeState, setThemeState } = useEditorStore();
+    const t = useTranslations();
 
     const { data: themes = [], refetch } = useQuery(trpc.themes.list.queryOptions());
     const queryClient = useQueryClient();
@@ -51,13 +53,13 @@ export function UserThemeSelector() {
             queryClient.invalidateQueries({ queryKey: trpc.themes.listPublic.queryKey() });
         } catch (error) {
             console.error("Failed to update theme", error);
-            toast.error("Failed to update theme");
+            toast.error(t("common.settings.failedToSave"));
         }
     };
 
     return (
         <div className="space-y-4">
-            <p className="py-0 text-sm font-medium">Saved Themes</p>
+            <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
 
             <Select
                 value={selectedId}
@@ -75,7 +77,7 @@ export function UserThemeSelector() {
                 }}
             >
                 <SelectTrigger className="w-64 capitalize">
-                    <SelectValue placeholder="Select theme" />
+                    <SelectValue placeholder={t("common.themeEditor.selectTheme")} />
                 </SelectTrigger>
                 <SelectContent className="w-64">
                     {(themes as any[]).map((theme) => (
@@ -91,7 +93,7 @@ export function UserThemeSelector() {
                 <div className="flex items-center gap-2 pt-1">
                     <Switch checked={selectedTheme.public} onCheckedChange={togglePublic} />
                     <span className="text-xs text-muted-foreground">
-                        {selectedTheme.public ? "Public" : "Private"}
+                        {selectedTheme.public ? t("common.themeEditor.public") : t("common.themeEditor.private")}
                     </span>
                 </div>
             )}

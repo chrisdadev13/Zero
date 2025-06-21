@@ -92,7 +92,7 @@ export default function AppearancePage() {
           </form>
           <Link to="editor">
             <Button variant="secondary" size="sm" className="mt-2">
-              Create / Edit Theme
+              {t('common.themeEditor.createEditTheme')}
             </Button>
           </Link>
         </Form>

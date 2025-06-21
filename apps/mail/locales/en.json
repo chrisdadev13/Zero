@@ -63,6 +63,27 @@
       "light": "Light",
       "system": "System"
     },
+    "themeEditor": {
+      "presetLabel": "Theme Preset",
+      "selectPreset": "Select a Preset",
+      "savedThemes": "Saved Themes",
+      "selectTheme": "Select theme",
+      "selectThemeAria": "Select {name} theme",
+      "public": "Public",
+      "private": "Private",
+      "colorsTitle": "Colors ({mode})",
+      "radiusLabel": "Radius (rem)",
+      "lowContrast": "Low contrast",
+      "marketplace": "Marketplace",
+      "searchPlaceholder": "Search for themes...",
+      "noThemesFound": "No themes found.",
+      "failedToLoadThemes": "Failed to load themes.",
+      "createEditTheme": "Create / Edit Theme",
+      "themeEditorTitle": "Theme Editor",
+      "themeEditorDescription": "Adjust styles and save as a custom theme.",
+      "publish": "Publish",
+      "reset": "Reset"
+    },
     "commandPalette": {
       "title": "Command Palette",
       "description": "Quick navigation and actions for Mail-0",

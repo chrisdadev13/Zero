@@ -43,18 +43,18 @@ export default function ThemeEditorPage() {
     return (
         <div className="grid gap-6">
             <SettingsCard
-                title={"Theme Editor"}
-                description={"Adjust styles and save as a custom theme."}
+                title={t("common.themeEditor.themeEditorTitle")}
+                description={t("common.themeEditor.themeEditorDescription")}
                 footer={
                     <div className="flex items-center gap-2 w-full max-w-md">
-                        <Button onClick={() => setDialogOpen(true)}>Publish</Button>
+                        <Button onClick={() => setDialogOpen(true)}>{t("common.themeEditor.publish")}</Button>
                         <button
                             type="button"
                             style={{ border: '1px solid #ef4444', color: '#ef4444' }}
                             className="rounded-md px-3 py-2 text-sm font-medium hover:bg-red-50"
                             onClick={() => resetToCurrentPreset()}
                         >
-                            Reset
+                            {t("common.themeEditor.reset")}
                         </button>
                     </div>
                 }
