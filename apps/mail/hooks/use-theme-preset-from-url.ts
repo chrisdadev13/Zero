@@ -4,13 +4,20 @@ import { useEditorStore } from "@/store/editor-store";
 
 export const useThemePresetFromUrl = () => {
     const [preset, setPreset] = useQueryState("theme");
-    const applyThemePreset = useEditorStore((state) => state.applyThemePreset);
+    const { applyThemePreset } = useEditorStore();
 
-    // Apply theme preset if it exists in URL and remove it
     React.useEffect(() => {
         if (preset) {
-            applyThemePreset(preset);
-            setPreset(null); // Remove the preset from URL
+            try {
+                if (typeof preset === 'string' && preset.trim()) {
+                    applyThemePreset(preset);
+                }
+            } catch (error) {
+                console.error('Failed to apply theme preset:', error);
+            } finally {
+                setPreset(null);
+            }
         }
     }, [preset, setPreset, applyThemePreset]);
+
 };
