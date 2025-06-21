@@ -24,7 +24,6 @@ import { useTranslations } from 'use-intl';
 import { ArrowLeft } from 'lucide-react';
 import './globals.css';
 import { ThemeScript } from '@/components/theme-script';
-import { ThemeProvider } from '@/components/themes-provider';
 
 export const meta: MetaFunction = () => {
   return [
@@ -74,7 +73,7 @@ export function Layout({ children }: PropsWithChildren) {
       </head>
       <body className="antialiased">
         <ServerProviders messages={messages} locale={locale} connectionId={connectionId}>
-          <ClientProviders>
+          <ClientProviders connectionId={connectionId || null}>
             {children}
           </ClientProviders>
         </ServerProviders>

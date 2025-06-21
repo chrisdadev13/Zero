@@ -7,7 +7,7 @@ import type { PropsWithChildren } from 'react';
 import Toaster from '@/components/ui/toast';
 import { ThemeProvider } from '@/components/themes-provider';
 
-export function ClientProviders({ children }: PropsWithChildren) {
+export function ClientProviders({ children, connectionId }: PropsWithChildren<{ connectionId: string | null }>) {
   const { data } = useSettings();
 
   const theme = data?.settings.colorTheme || 'system';
@@ -16,7 +16,7 @@ export function ClientProviders({ children }: PropsWithChildren) {
     <NuqsAdapter>
       <JotaiProvider>
 
-        <ThemeProvider defaultTheme="dark">
+        <ThemeProvider defaultTheme="dark" connectionId={connectionId || undefined}>
           <SidebarProvider>
             <PostHogProvider>
               {children}

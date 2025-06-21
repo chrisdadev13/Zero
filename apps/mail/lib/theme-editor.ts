@@ -16,6 +16,7 @@ export interface EditorPreviewProps {
 }
 
 export interface ThemeEditorState extends BaseEditorState {
+    id?: string;
     preset?: string;
     styles: ThemeStyles;
     currentMode: "light" | "dark";

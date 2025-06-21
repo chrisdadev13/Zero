@@ -3,6 +3,7 @@ import { QueryProvider } from './query-provider';
 import { AutumnProvider } from 'autumn-js/react';
 import type { PropsWithChildren } from 'react';
 import { IntlProvider } from 'use-intl';
+import { ClientProviders } from './client-providers';
 
 export function ServerProviders({
   children,
@@ -13,7 +14,9 @@ export function ServerProviders({
   return (
     <AutumnProvider backendUrl={import.meta.env.VITE_PUBLIC_BACKEND_URL}>
       <IntlProvider messages={messages} locale={locale} timeZone={'UTC'}>
-        <QueryProvider connectionId={connectionId}>{children}</QueryProvider>
+        <QueryProvider connectionId={connectionId}>
+          <ClientProviders connectionId={connectionId}>{children}</ClientProviders>
+        </QueryProvider>
       </IntlProvider>
     </AutumnProvider>
   );

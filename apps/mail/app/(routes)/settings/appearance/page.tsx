@@ -105,7 +105,7 @@ export default function AppearancePage() {
           </Button>
         }
       >
-        {/* <Form {...form}>
+        <Form {...form}>
           <form id="appearance-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4">
               <div className="max-w-sm space-y-2">
@@ -162,11 +162,11 @@ export default function AppearancePage() {
                 ) : null}
               </div>
             </div>
-          </form>
-        </Form> */}
 
-        <ThemePresetSelector />
-        <UserThemeSelector />
+            <ThemePresetSelector />
+            <UserThemeSelector />
+          </form>
+        </Form>
       </SettingsCard>
     </div>
   );

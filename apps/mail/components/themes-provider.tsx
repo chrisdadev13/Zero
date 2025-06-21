@@ -4,12 +4,15 @@ import { createContext, useContext, useEffect } from "react";
 import { useEditorStore } from "../store/editor-store";
 import { applyThemeToElement } from "../lib/apply-theme";
 import { useThemePresetFromUrl } from "../hooks/use-theme-preset-from-url";
+import { useTRPC } from "@/providers/query-provider";
+import { useQuery } from "@tanstack/react-query";
 
 type Theme = "dark" | "light";
 
 type ThemeProviderProps = {
     children: React.ReactNode;
     defaultTheme?: Theme;
+    connectionId?: string;
 };
 
 type Coords = { x: number; y: number };
@@ -28,8 +31,26 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+export function ThemeProvider({ children, connectionId, ...props }: ThemeProviderProps) {
     const { themeState, setThemeState } = useEditorStore();
+
+    const trpc = useTRPC();
+
+    // Fetch theme from DB for connection
+    const { data: dbTheme } = connectionId
+        ? useQuery(trpc.themes.getByConnectionId.queryOptions({ connectionId }))
+        : { data: undefined } as any;
+
+    useEffect(() => {
+        if (dbTheme && (dbTheme as any).styles) {
+            (setThemeState as any)({
+                ...themeState,
+                styles: (dbTheme as any).styles,
+                id: (dbTheme as any).id,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [(dbTheme as any)?.id]);
 
     // Handle theme preset from URL
     useThemePresetFromUrl();
