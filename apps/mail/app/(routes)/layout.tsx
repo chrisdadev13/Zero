@@ -2,15 +2,13 @@ import { HotkeyProviderWrapper } from '@/components/providers/hotkey-provider-wr
 import { CommandPaletteProvider } from '@/components/context/command-palette-context';
 import { Outlet } from 'react-router';
 import { ThemeProvider } from '@/components/themes-provider';
-import { useActiveConnection } from '@/hooks/use-connections';
 
 export default function Layout() {
-  const { data: activeConnection } = useActiveConnection();
   return (
     <CommandPaletteProvider>
       {/* <VoiceProvider> */}
       <HotkeyProviderWrapper>
-        <ThemeProvider defaultTheme="dark" connectionId={activeConnection?.id || undefined}>
+        <ThemeProvider defaultTheme="light">
           <div className="relative flex max-h-screen w-full overflow-hidden">
             <Outlet />
           </div>
