@@ -63,6 +63,27 @@
       "light": "Claro",
       "system": "Sistema"
     },
+    "themeEditor": {
+      "presetLabel": "Tema preestablecido",
+      "selectPreset": "Seleccionar un preset",
+      "savedThemes": "Temas guardados",
+      "selectTheme": "Seleccionar tema",
+      "selectThemeAria": "Seleccionar tema {name}",
+      "public": "Público",
+      "private": "Privado",
+      "colorsTitle": "Colores ({mode})",
+      "radiusLabel": "Radio (rem)",
+      "lowContrast": "Bajo contraste",
+      "marketplace": "Mercado",
+      "searchPlaceholder": "Buscar temas...",
+      "noThemesFound": "No se encontraron temas.",
+      "failedToLoadThemes": "Error al cargar los temas.",
+      "createEditTheme": "Crear / Editar tema",
+      "themeEditorTitle": "Editor de temas",
+      "themeEditorDescription": "Ajusta estilos y guarda como tema personalizado.",
+      "publish": "Publicar",
+      "reset": "Restablecer"
+    },
     "commandPalette": {
       "title": "Paleta de Comandos",
       "description": "Navegación rápida y acciones para Mail-0",
@@ -395,6 +416,9 @@
         "customPromptPlaceholder": "Introduzca su prompt personalizado para la IA...",
         "customPromptDescription": "Personaliza cómo la IA escribe tus respuestas de correo electrónico. Esto se añadirá al prompt base.",
         "noResultsFound": "No se han encontrado resultados",
+        "defaultEmailAlias": "Alias de correo electrónico por defecto",
+        "selectDefaultEmail": "Selecciona un alias de correo electrónico",
+        "defaultEmailDescription": "El alias de correo electrónico por defecto se usará cuando no se especifique otro alias.",
         "zeroSignature": "Firma Zero",
         "zeroSignatureDescription": "Añade una firma Zero a tus correos."
       },
