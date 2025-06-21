@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { SettingsCard } from "@/components/settings/settings-card";
 import { Button } from "@/components/ui/button";
@@ -20,20 +18,26 @@ export default function ThemeEditorPage() {
     const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
 
     const handlePublish = async (data: { name: string }) => {
-        await toast.promise(
-            createTheme({
-                theme: {
-                    name: data.name,
-                    styles: themeState.styles,
-                    public: true,
+        try {
+
+            await toast.promise(
+                createTheme({
+                    theme: {
+                        name: data.name,
+                        styles: themeState.styles,
+                        public: true,
+                    },
+                }),
+                {
+                    loading: t("common.actions.saving"),
+                    success: t("common.settings.saved"),
+                    error: t("common.settings.failedToSave"),
                 },
-            }),
-            {
-                loading: t("common.actions.saving"),
-                success: "Theme published!",
-                error: t("common.settings.failedToSave"),
-            },
-        );
+            );
+        } catch (error) {
+            console.error("Failed to publish theme", error);
+            toast.error(t("common.settings.failedToSave"));
+        }
     };
 
     return (

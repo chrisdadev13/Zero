@@ -1,6 +1,3 @@
-"use client";
-
-import { Badge } from "@/components/ui/badge";
 import { useEditorStore } from "@/store/editor-store";
 import { defaultPresets } from "../lib/theme-presets";
 import {

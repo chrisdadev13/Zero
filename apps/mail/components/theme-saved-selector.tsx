@@ -1,5 +1,3 @@
-"use client";
-
 import { useTRPC } from "@/providers/query-provider";
 import {
     Select,
@@ -14,6 +12,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
 import { Globe2, Lock } from "lucide-react";
+import { toast } from "sonner";
 
 export function UserThemeSelector() {
     const trpc = useTRPC();
@@ -38,17 +37,22 @@ export function UserThemeSelector() {
 
     const togglePublic = async () => {
         if (!selectedTheme) return;
-        await updateTheme({
-            themeId: selectedTheme.id,
-            theme: {
-                name: selectedTheme.name,
-                styles: selectedTheme.styles,
+        try {
+            await updateTheme({
+                themeId: selectedTheme.id,
+                theme: {
+                    name: selectedTheme.name,
+                    styles: selectedTheme.styles,
+                    public: !selectedTheme.public,
+                },
                 public: !selectedTheme.public,
-            },
-            public: !selectedTheme.public,
-        });
-        await refetch();
-        queryClient.invalidateQueries({ queryKey: trpc.themes.listPublic.queryKey() });
+            });
+            await refetch();
+            queryClient.invalidateQueries({ queryKey: trpc.themes.listPublic.queryKey() });
+        } catch (error) {
+            console.error("Failed to update theme", error);
+            toast.error("Failed to update theme");
+        }
     };
 
     return (

@@ -1,7 +1,3 @@
-"use client";
-
-// (No animations needed)
-
 import { Button } from "@/components/ui/button";
 import { getPresetThemeStyles } from "../lib/theme-preset-helper";
 import { cn } from "../lib/is-deep-equal";

@@ -79,4 +79,4 @@ export type ThemePreset = {
     };
 };
 
-export type Theme = inferRouterOutputs<AppRouter>["themes"]["getByConnectionId"];
+export type Theme = inferRouterOutputs<AppRouter>["themes"]["getActive"];

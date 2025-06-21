@@ -1,18 +1,9 @@
-"use client";
-
 import { useEditorStore } from "@/store/editor-store";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Color from "color";
 import { AlertTriangle } from "lucide-react";
 import { COMMON_STYLES } from "@/config/theme";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 
 const COLOR_KEYS: string[] = [
     "background",

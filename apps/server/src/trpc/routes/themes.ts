@@ -1,22 +1,14 @@
 import z from "zod";
 import { getZeroDB } from "../../lib/server-utils";
-import { router, privateProcedure } from "../trpc";
+import { router, privateProcedure, activeConnectionProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { themeStylesSchema } from "../../lib/themes";
 
 export const themesRouter = router({
-    getByConnectionId: privateProcedure.input(z.object({
-        connectionId: z.string(),
-    })).query(async ({ ctx, input }) => {
-        const { connectionId } = input;
+    getActive: activeConnectionProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);
 
-        const connection = await db.findConnectionById(connectionId);
-
-        if (!connection) throw new TRPCError({ code: "NOT_FOUND", message: "Connection not found" });
-        if (!connection.currentThemeId) throw new TRPCError({ code: "NOT_FOUND", message: "Theme not found" });
-
-        const theme = await db.findThemeById(connection.currentThemeId);
+        const theme = await db.findThemeById(ctx.activeConnection.currentThemeId ?? "");
         if (!theme) throw new TRPCError({ code: "NOT_FOUND", message: "Theme not found" });
 
         return theme;
@@ -54,14 +46,6 @@ export const themesRouter = router({
         const db = getZeroDB(ctx.sessionUser.id);
         const updatedTheme = await db.updateTheme(themeId, theme);
         return updatedTheme;
-    }),
-    delete: privateProcedure.input(z.object({
-        themeId: z.string(),
-    })).mutation(async ({ ctx, input }) => {
-        const { themeId } = input;
-        const db = getZeroDB(ctx.sessionUser.id);
-        await db.deleteTheme(themeId);
-        return { success: true };
     }),
     list: privateProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);

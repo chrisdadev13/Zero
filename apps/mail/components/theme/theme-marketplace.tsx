@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { ThemeCard } from "./theme-card";
@@ -9,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
 import type { ThemeStyles } from "@/types/themes";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 
 interface PublicTheme {
     id: string;
@@ -18,6 +19,7 @@ interface PublicTheme {
 }
 
 export function ThemeMarketplace() {
+    const t = useTranslations();
     const trpc = useTRPC();
     const { themeState, setThemeState } = useEditorStore();
     const queryClient = useQueryClient();
@@ -26,7 +28,7 @@ export function ThemeMarketplace() {
     // Search state
     const [query, setQuery] = useState("");
 
-    const { data } = useQuery(trpc.themes.listPublic.queryOptions({ page: 0, limit: 100 }));
+    const { data, isLoading, error } = useQuery(trpc.themes.listPublic.queryOptions({ page: 0, limit: 100 }));
 
     const themes: PublicTheme[] = (data?.themes as PublicTheme[]) ?? [];
 
@@ -39,6 +41,10 @@ export function ThemeMarketplace() {
     const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
 
     const handleSelect = async (theme: PublicTheme) => {
+        if (!theme.styles[mode]) {
+            console.error(`Theme styles missing for mode: ${mode}`);
+            return;
+        }
         // If current user already owns theme, just apply
         if (theme.userId === session?.user.id) {
             setThemeState({
@@ -65,14 +71,31 @@ export function ThemeMarketplace() {
 
             setThemeState({
                 ...themeState,
-                id: (newTheme as any)?.id ?? undefined,
+                id: newTheme.id,
                 styles: theme.styles,
                 preset: undefined,
             });
         } catch (err) {
             console.error("Failed to install theme", err);
+            toast.error(t("common.settings.failedToSave"));
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex h-32 w-full items-center justify-center">
+                <Loader2 className="h-4 w-4 animate-spin" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex h-32 w-full items-center justify-center">
+                <p className="text-sm text-red-500">Failed to load themes.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-4">
@@ -87,13 +110,12 @@ export function ThemeMarketplace() {
                     <ThemeCard
                         key={theme.id}
                         name={theme.name}
-                        creator={undefined}
-                        styles={theme.styles[mode]}
+                        styles={theme.styles[mode] ?? {}}
                         onSelect={() => handleSelect(theme)}
                     />
                 ))}
             </div>
-            {themes.length === 0 && (
+            {filtered.length === 0 && (
                 <p className="text-muted-foreground text-sm">No themes found.</p>
             )}
         </div>

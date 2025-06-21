@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, useEffect } from "react";
 import { useEditorStore } from "../store/editor-store";
 import { applyThemeToElement } from "../lib/apply-theme";
@@ -31,15 +29,14 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
-export function ThemeProvider({ children, connectionId, ...props }: ThemeProviderProps) {
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     const { themeState, setThemeState } = useEditorStore();
 
     const trpc = useTRPC();
 
     // Fetch theme from DB for connection (always call the hook – gate with `enabled`)
     const { data: dbTheme } = useQuery({
-        ...trpc.themes.getByConnectionId.queryOptions({ connectionId: connectionId ?? "" }),
-        enabled: Boolean(connectionId),
+        ...trpc.themes.getActive.queryOptions(),
     });
 
     useEffect(() => {

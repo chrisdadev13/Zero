@@ -367,10 +367,6 @@ class ZeroDB extends DurableObject {
     return await this.db.update(theme).set(themeData).where(eq(theme.id, themeId));
   }
 
-  async deleteTheme(themeId: string) {
-    return await this.db.delete(theme).where(eq(theme.id, themeId));
-  }
-
   async setThemeForConnection(connectionId: string, themeId: string) {
     return await this.db.update(connection).set({ currentThemeId: themeId }).where(eq(connection.id, connectionId));
   }

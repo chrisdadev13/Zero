@@ -1,7 +1,6 @@
 export interface ThemeCardProps {
     name: string;
     styles: Record<string, string>;
-    creator?: string;
     selected?: boolean;
     onSelect?: () => void;
 }
@@ -9,7 +8,7 @@ export interface ThemeCardProps {
 import { cn } from "@/lib/utils";
 import { colorFormatter } from "@/lib/color-converter";
 
-export function ThemeCard({ name, styles, creator, selected, onSelect }: ThemeCardProps) {
+export function ThemeCard({ name, styles, selected, onSelect }: ThemeCardProps) {
     // Pick a handful of representative colors to preview the theme.
     const previewKeys = [
         "primary",
@@ -27,6 +26,8 @@ export function ThemeCard({ name, styles, creator, selected, onSelect }: ThemeCa
                 "bg-card hover:bg-secondary/50 text-card-foreground w-full rounded-lg border p-4 shadow-sm transition-colors",
                 selected && "ring-2 ring-primary"
             )}
+            aria-label={`Select ${name} theme`}
+            aria-pressed={selected}
         >
             <span className="block text-center text-base font-semibold capitalize mb-3">
                 {name.replace(/-/g, " ")}
@@ -40,11 +41,9 @@ export function ThemeCard({ name, styles, creator, selected, onSelect }: ThemeCa
                     />
                 ))}
             </div>
-            {creator && (
-                <span className="mt-2 block text-center text-xs text-muted-foreground">
-                    by {creator}
-                </span>
-            )}
+            {
+                /* TODO: Add Creator username or something */
+            }
         </button>
     );
 } 

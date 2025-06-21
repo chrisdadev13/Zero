@@ -1,5 +1,3 @@
-"use client";
-
 import { defaultDarkThemeStyles, defaultLightThemeStyles } from "../config/theme";
 
 export function ThemeScript() {
