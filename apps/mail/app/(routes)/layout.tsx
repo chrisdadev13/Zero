@@ -2,6 +2,7 @@ import { HotkeyProviderWrapper } from '@/components/providers/hotkey-provider-wr
 import { CommandPaletteProvider } from '@/components/context/command-palette-context';
 import { VoiceProvider } from '@/providers/voice-provider';
 import { Outlet } from 'react-router';
+import { ThemeProvider } from '@/components/themes-provider';
 
 export default function Layout() {
   return (

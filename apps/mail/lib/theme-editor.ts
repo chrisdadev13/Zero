@@ -1,4 +1,4 @@
-import type { ThemeStyles } from "../../server/src/lib/themes";
+import type { ThemeStyles } from "./themes";
 
 // Base interface for any editor's state
 export interface BaseEditorState {
