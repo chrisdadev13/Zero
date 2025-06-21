@@ -5,7 +5,7 @@ import { useSettings } from '@/hooks/use-settings';
 import { Provider as JotaiProvider } from 'jotai';
 import type { PropsWithChildren } from 'react';
 import Toaster from '@/components/ui/toast';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from '@/components/themes-provider';
 
 export function ClientProviders({ children }: PropsWithChildren) {
   const { data } = useSettings();
@@ -15,12 +15,8 @@ export function ClientProviders({ children }: PropsWithChildren) {
   return (
     <NuqsAdapter>
       <JotaiProvider>
-        <ThemeProvider
-          attribute="class"
-          enableSystem
-          disableTransitionOnChange
-          defaultTheme={theme}
-        >
+
+        <ThemeProvider defaultTheme="dark">
           <SidebarProvider>
             <PostHogProvider>
               {children}

@@ -27,6 +27,7 @@ import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import { ThemePresetSelector } from '@/components/theme-preset-selector';
 
 const formSchema = z.object({
   colorTheme: z.enum(['dark', 'light', 'system', '']),
@@ -103,7 +104,7 @@ export default function AppearancePage() {
           </Button>
         }
       >
-        <Form {...form}>
+        {/* <Form {...form}>
           <form id="appearance-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4">
               <div className="max-w-sm space-y-2">
@@ -161,7 +162,9 @@ export default function AppearancePage() {
               </div>
             </div>
           </form>
-        </Form>
+        </Form> */}
+
+        <ThemePresetSelector />
       </SettingsCard>
     </div>
   );

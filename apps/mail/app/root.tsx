@@ -23,6 +23,8 @@ import type { Route } from './+types/root';
 import { useTranslations } from 'use-intl';
 import { ArrowLeft } from 'lucide-react';
 import './globals.css';
+import { ThemeScript } from '@/components/theme-script';
+import { ThemeProvider } from '@/components/themes-provider';
 
 export const meta: MetaFunction = () => {
   return [
@@ -58,6 +60,7 @@ export function Layout({ children }: PropsWithChildren) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <ThemeScript />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)" />
@@ -71,7 +74,9 @@ export function Layout({ children }: PropsWithChildren) {
       </head>
       <body className="antialiased">
         <ServerProviders messages={messages} locale={locale} connectionId={connectionId}>
-          <ClientProviders>{children}</ClientProviders>
+          <ClientProviders>
+            {children}
+          </ClientProviders>
         </ServerProviders>
         <ScrollRestoration />
         <Scripts />
