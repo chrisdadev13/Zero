@@ -141,7 +141,10 @@ function useEditorStoreHook(): EditorStore {
 
     const hasThemeChangedFromCheckpoint = () => {
         const checkpoint = themeCheckpoint;
-        return !isDeepEqual(themeState, checkpoint);
+        if (!checkpoint) return true;
+        const { currentMode: _, ...stateWithoutMode } = themeState;
+        const { currentMode: __, ...checkpointWithoutMode } = checkpoint;
+        return !isDeepEqual(stateWithoutMode, checkpointWithoutMode);
     };
 
     const hasUnsavedChanges = () => {
