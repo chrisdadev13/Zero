@@ -48,14 +48,13 @@ export default function ThemeEditorPage() {
                 footer={
                     <div className="flex items-center gap-2 w-full max-w-md">
                         <Button onClick={() => setDialogOpen(true)}>{t("common.themeEditor.publish")}</Button>
-                        <button
-                            type="button"
-                            style={{ border: '1px solid #ef4444', color: '#ef4444' }}
-                            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-red-50"
+                        <Button
+                            variant="outline"
+                            className="border-red-500 text-red-500 hover:bg-red-50"
                             onClick={() => resetToCurrentPreset()}
                         >
                             {t("common.themeEditor.reset")}
-                        </button>
+                        </Button>
                     </div>
                 }
             >
