@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/providers/query-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "@zero/server/trpc";
 
 export default function ThemesMarketplacePage() {
     const trpc = useTRPC();
@@ -26,7 +28,7 @@ export default function ThemesMarketplacePage() {
                 </div>
             )}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {themes.map((t: any) => (
+                {themes.map((t: inferRouterOutputs<AppRouter>["themes"]["listPublic"]["themes"]) => (
                     <Card key={t.id}>
                         <CardHeader>
                             <CardTitle>{t.name}</CardTitle>

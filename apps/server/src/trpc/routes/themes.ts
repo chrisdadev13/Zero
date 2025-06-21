@@ -75,6 +75,14 @@ export const themesRouter = router({
         const { page = 0, limit = 20 } = input;
         const db = getZeroDB(ctx.sessionUser.id);
         const themes = await db.findPublicThemes(limit, page * limit);
+
+        if (!themes) {
+            return {
+                themes: [],
+                hasMore: false,
+            };
+        }
+
         return {
             themes,
             hasMore: themes.length === limit,
