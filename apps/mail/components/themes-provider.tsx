@@ -36,10 +36,11 @@ export function ThemeProvider({ children, connectionId, ...props }: ThemeProvide
 
     const trpc = useTRPC();
 
-    // Fetch theme from DB for connection
-    const { data: dbTheme } = connectionId
-        ? useQuery(trpc.themes.getByConnectionId.queryOptions({ connectionId }))
-        : { data: undefined } as any;
+    // Fetch theme from DB for connection (always call the hook – gate with `enabled`)
+    const { data: dbTheme } = useQuery({
+        ...trpc.themes.getByConnectionId.queryOptions({ connectionId: connectionId ?? "" }),
+        enabled: Boolean(connectionId),
+    });
 
     useEffect(() => {
         if (dbTheme && (dbTheme as any).styles) {

@@ -17,6 +17,7 @@ import { ThemePresetSelector } from '@/components/theme-preset-selector';
 import { UserThemeSelector } from '@/components/theme-saved-selector';
 import { ThemeToggle } from '@/components/theme/toggle-theme';
 import { Link } from 'react-router';
+import { ThemeMarketplace } from '@/components/theme/theme-marketplace';
 
 const formSchema = z.object({
   colorTheme: z.enum(['dark', 'light', 'system', '']),
@@ -78,8 +79,16 @@ export default function AppearancePage() {
               <ThemeToggle />
 
             </div>
-            <ThemePresetSelector />
+            {/* Preset themes */}
+            <div className="pt-2">
+              <ThemePresetSelector />
+            </div>
+
+            {/* User's saved themes */}
             <UserThemeSelector />
+
+            {/* Public marketplace */}
+            <ThemeMarketplace />
           </form>
           <Link to="editor">
             <Button variant="secondary" size="sm" className="mt-2">

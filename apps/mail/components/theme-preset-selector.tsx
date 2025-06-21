@@ -27,16 +27,16 @@ export function ThemePresetSelector() {
 
     return (
         <div className="space-y-4">
-            <p className="px-3 py-0 text-sm font-medium">
+            <p className="py-0 text-sm font-medium">
                 Theme Preset
             </p>
 
             <Select
                 onValueChange={(val) => applyThemePreset(val)}
-                defaultValue={themeState.preset ?? "modern-minimal"}
+                value={themeState.preset}
             >
                 <SelectTrigger className="w-64 capitalize">
-                    <SelectValue placeholder="Select preset" />
+                    <SelectValue placeholder="Select a Preset" />
                 </SelectTrigger>
                 <SelectContent className="w-64">
                     {presetNames.map((name) => {

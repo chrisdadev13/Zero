@@ -96,6 +96,7 @@ function useEditorStoreHook(): EditorStore {
         const newStyles = getPresetThemeStyles(preset);
         const newThemeState: ThemeEditorState = {
             ...currentThemeState,
+            id: undefined,
             preset,
             styles: newStyles,
             hslAdjustments: defaultThemeState.hslAdjustments,
