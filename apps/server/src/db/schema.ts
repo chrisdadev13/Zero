@@ -98,6 +98,7 @@ export const connection = createTable(
     accessToken: text('access_token'),
     refreshToken: text('refresh_token'),
     scope: text('scope').notNull(),
+    currentThemeId: text('current_theme_id').references(() => theme.id, { onDelete: 'set null' }),
     providerId: text('provider_id').$type<'google' | 'microsoft'>().notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     createdAt: timestamp('created_at').notNull(),
@@ -179,9 +180,6 @@ export const theme = createTable("theme", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  connectionId: text("connection_id")
-    .notNull()
-    .references(() => connection.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   styles: jsonb("styles").$type<ThemeStyles>().notNull(),
   public: boolean("public").notNull().default(false),

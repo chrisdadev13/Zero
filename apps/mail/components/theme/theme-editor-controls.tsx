@@ -1,0 +1,197 @@
+"use client";
+
+import { useEditorStore } from "@/store/editor-store";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import Color from "color";
+import { AlertTriangle } from "lucide-react";
+import { COMMON_STYLES } from "@/config/theme";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+const COLOR_KEYS: string[] = [
+    "background",
+    "foreground",
+    "primary",
+    "secondary",
+    "accent",
+    "border",
+    "primary-foreground",
+    "secondary-foreground",
+    "accent-foreground",
+];
+
+const FONT_KEY = "font-sans";
+
+const FONT_OPTIONS: { label: string; value: string }[] = [
+    { label: "System Sans", value: "ui-sans-serif, system-ui" },
+    { label: "Inter", value: "Inter, sans-serif" },
+    { label: "Roboto", value: "Roboto, sans-serif" },
+    { label: "Open Sans", value: "'Open Sans', sans-serif" },
+    { label: "Lato", value: "Lato, sans-serif" },
+    { label: "Poppins", value: "Poppins, sans-serif" },
+    { label: "Georgia (Serif)", value: "Georgia, serif" },
+    { label: "Times New Roman", value: "'Times New Roman', serif" },
+    { label: "Menlo (Mono)", value: "Menlo, monospace" },
+    { label: "JetBrains Mono", value: "'JetBrains Mono', monospace" },
+];
+
+const CONTRAST_PAIR: Record<string, string> = {
+    background: "foreground",
+    foreground: "background",
+    primary: "primary-foreground",
+    "primary-foreground": "primary",
+    secondary: "secondary-foreground",
+    "secondary-foreground": "secondary",
+    accent: "accent-foreground",
+    "accent-foreground": "accent",
+};
+
+function getLuminance(hex: string): number {
+    const c = Color(hex).rgb();
+    const [r, g, b] = [c.red(), c.green(), c.blue()].map((v) => {
+        const channel = v / 255;
+        return channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function getContrastRatio(colA: string, colB: string): number {
+    let L1 = getLuminance(colA);
+    let L2 = getLuminance(colB);
+    if (L1 < L2) [L1, L2] = [L2, L1];
+    return (L1 + 0.05) / (L2 + 0.05);
+}
+
+export default function ThemeEditorControls() {
+    const { themeState, setThemeState } = useEditorStore();
+    const mode = themeState.currentMode;
+
+    const handleChange = (key: string, value: string) => {
+        // If key is common style, update both light & dark
+        if (COMMON_STYLES.includes(key as (typeof COMMON_STYLES)[number])) {
+            setThemeState({
+                ...themeState,
+                styles: {
+                    ...themeState.styles,
+                    light: {
+                        ...(themeState.styles.light as any),
+                        [key]: value,
+                    } as any,
+                    dark: {
+                        ...(themeState.styles.dark as any),
+                        [key]: value,
+                    } as any,
+                } as any,
+            });
+        } else {
+            setThemeState({
+                ...themeState,
+                styles: {
+                    ...themeState.styles,
+                    [mode]: {
+                        ...themeState.styles[mode],
+                        [key]: value,
+                    },
+                },
+            });
+        }
+    };
+
+    return (
+        <div className="space-y-8">
+            {/* Color section */}
+            <div className="space-y-4">
+                <Badge variant="secondary" className="px-3 py-1.5 capitalize">
+                    Colors ({mode})
+                </Badge>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {COLOR_KEYS.map((k) => {
+                        // Using `any` cast for dynamic key access because ThemeStyleProps does not allow indexing with string variable
+                        const currentValue = (themeState.styles as any)[mode][k] ?? "#ffffff";
+                        const pairKey = CONTRAST_PAIR[k];
+                        let lowContrast = false;
+                        if (pairKey) {
+                            const pairVal = (themeState.styles as any)[mode][pairKey] ?? "#fff";
+                            const ratio = getContrastRatio(currentValue, pairVal);
+                            lowContrast = ratio < 3; // WCAG AA for large text is 3
+                        }
+
+                        return (
+                            <div key={k} className="flex items-center gap-3">
+                                <label className="w-32 text-sm capitalize" htmlFor={`color-${k}`}>
+                                    {k.replace(/-/g, " ")}
+                                </label>
+                                <input
+                                    id={`color-${k}`}
+                                    type="color"
+                                    value={currentValue}
+                                    onChange={(e) => handleChange(k, e.target.value)}
+                                    className="h-8 w-10 border rounded"
+                                />
+                                <Input
+                                    className="flex-1"
+                                    value={currentValue}
+                                    onChange={(e) => handleChange(k, e.target.value)}
+                                />
+                                {lowContrast && (
+                                    <span title="Low contrast">
+                                        <AlertTriangle className="h-4 w-4 text-red-500" />
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Font section */}
+            <div className="space-y-4">
+                <Badge variant="secondary" className="px-3 py-1.5 capitalize">
+                    Font family
+                </Badge>
+                <Select
+                    defaultValue={(themeState.styles.light as any)[FONT_KEY] ?? ""}
+                    onValueChange={(v) => {
+                        handleChange(FONT_KEY, v);
+                        document.body.style.fontFamily = v;
+                    }}
+                >
+                    <SelectTrigger className="w-64">
+                        <SelectValue placeholder="Select font" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                                <span style={{ fontFamily: opt.value }}>{opt.label}</span>
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Radius section */}
+            <div className="space-y-4">
+                <Badge variant="secondary" className="px-3 py-1.5 capitalize">
+                    Radius (rem)
+                </Badge>
+                <div className="flex items-center gap-4">
+                    <input
+                        type="range"
+                        min={0}
+                        max={2}
+                        step={0.125}
+                        value={parseFloat(themeState.styles.light.radius.replace("rem", ""))}
+                        onChange={(e) => handleChange("radius", `${e.target.value}rem`)}
+                    />
+                    <span className="w-12 text-sm">{themeState.styles.light.radius}</span>
+                </div>
+            </div>
+        </div>
+    );
+} 

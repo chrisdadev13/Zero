@@ -9,6 +9,7 @@ import {
   connection,
   note,
   session,
+  theme,
   user,
   userHotkeys,
   userSettings,
@@ -39,6 +40,7 @@ import { Autumn } from 'autumn-js';
 import { appRouter } from './trpc';
 import { cors } from 'hono/cors';
 import { Hono } from 'hono';
+import type { Theme } from './lib/themes';
 
 class ZeroDB extends DurableObject {
   db: DB = createDb(env.HYPERDRIVE.connectionString);
@@ -342,6 +344,35 @@ class ZeroDB extends DurableObject {
       .update(connection)
       .set(updatingInfo)
       .where(eq(connection.id, connectionId));
+  }
+
+  async findThemeById(themeId: string): Promise<typeof theme.$inferSelect | undefined> {
+    return await this.db.query.theme.findFirst({
+      where: eq(theme.id, themeId),
+    });
+  }
+
+  async findThemesByUser(userId: string): Promise<(typeof theme.$inferSelect)[]> {
+    return await this.db.query.theme.findMany({
+      where: eq(theme.userId, userId),
+      orderBy: desc(theme.createdAt),
+    });
+  }
+
+  async createTheme(themeData: typeof theme.$inferInsert) {
+    return await this.db.insert(theme).values(themeData);
+  }
+
+  async updateTheme(themeId: string, themeData: Partial<typeof theme.$inferInsert>) {
+    return await this.db.update(theme).set(themeData).where(eq(theme.id, themeId));
+  }
+
+  async deleteTheme(themeId: string) {
+    return await this.db.delete(theme).where(eq(theme.id, themeId));
+  }
+
+  async setThemeForConnection(connectionId: string, themeId: string) {
+    return await this.db.update(connection).set({ currentThemeId: themeId }).where(eq(connection.id, connectionId));
   }
 }
 

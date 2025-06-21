@@ -28,6 +28,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import * as z from 'zod';
 import { ThemePresetSelector } from '@/components/theme-preset-selector';
+import { UserThemeSelector } from '@/components/theme-saved-selector';
 
 const formSchema = z.object({
   colorTheme: z.enum(['dark', 'light', 'system', '']),
@@ -165,6 +166,7 @@ export default function AppearancePage() {
         </Form> */}
 
         <ThemePresetSelector />
+        <UserThemeSelector />
       </SettingsCard>
     </div>
   );

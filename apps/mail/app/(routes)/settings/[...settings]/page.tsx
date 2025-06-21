@@ -7,12 +7,14 @@ import { useTranslations } from 'use-intl';
 import GeneralPage from '../general/page';
 import { useParams } from 'react-router';
 import LabelsPage from '../labels/page';
+import AppearanceEditorPage from '../appearance/editor/page';
 
 const settingsPages: Record<string, React.ComponentType> = {
   general: GeneralPage,
   connections: ConnectionsPage,
   security: SecurityPage,
   appearance: AppearancePage,
+  appearanceEditor: AppearanceEditorPage,
   shortcuts: ShortcutsPage,
   notifications: NotificationsPage,
   labels: LabelsPage,
