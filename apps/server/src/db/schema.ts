@@ -151,8 +151,6 @@ export const writingStyleMatrix = createTable(
       .notNull()
       .references(() => connection.id, { onDelete: 'cascade' }),
     numMessages: integer().notNull(),
-    // TODO: way too much pain to get this type to work,
-    // revisit later
     style: jsonb().$type<unknown>().notNull(),
     updatedAt: timestamp()
       .defaultNow()

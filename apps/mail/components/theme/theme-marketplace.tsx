@@ -6,18 +6,22 @@ import { ThemeCard } from "./theme-card";
 import { useEditorStore } from "@/store/editor-store";
 import { useTRPC } from "@/providers/query-provider";
 import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "@/lib/auth-client";
+import type { ThemeStyles } from "@/types/themes";
 
 interface PublicTheme {
     id: string;
     name: string;
-    styles: Record<string, any>;
+    styles: ThemeStyles;
     userId?: string;
-    creatorName?: string;
 }
 
 export function ThemeMarketplace() {
     const trpc = useTRPC();
     const { themeState, setThemeState } = useEditorStore();
+    const queryClient = useQueryClient();
+    const { data: session } = useSession();
 
     // Search state
     const [query, setQuery] = useState("");
@@ -32,12 +36,42 @@ export function ThemeMarketplace() {
         t.name.toLowerCase().includes(query.toLowerCase())
     );
 
-    const handleSelect = (styles: any) => {
-        setThemeState({
-            ...themeState,
-            styles,
-            preset: undefined,
-        });
+    const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
+
+    const handleSelect = async (theme: PublicTheme) => {
+        // If current user already owns theme, just apply
+        if (theme.userId === session?.user.id) {
+            setThemeState({
+                ...themeState,
+                id: theme.id,
+                styles: theme.styles,
+                preset: undefined,
+            });
+            return;
+        }
+
+        // Otherwise, install (copy) the theme under user's account
+        try {
+            const newTheme = await createTheme({
+                theme: {
+                    name: theme.name,
+                    styles: theme.styles,
+                    public: true,
+                },
+            });
+
+            // Invalidate user's theme list and marketplace (optional)
+            queryClient.invalidateQueries({ queryKey: trpc.themes.list.queryKey() });
+
+            setThemeState({
+                ...themeState,
+                id: (newTheme as any)?.id ?? undefined,
+                styles: theme.styles,
+                preset: undefined,
+            });
+        } catch (err) {
+            console.error("Failed to install theme", err);
+        }
     };
 
     return (
@@ -53,9 +87,9 @@ export function ThemeMarketplace() {
                     <ThemeCard
                         key={theme.id}
                         name={theme.name}
-                        creator={theme.creatorName ?? theme.userId?.slice(0, 6) ?? ""}
+                        creator={undefined}
                         styles={theme.styles[mode]}
-                        onSelect={() => handleSelect(theme.styles)}
+                        onSelect={() => handleSelect(theme)}
                     />
                 ))}
             </div>
