@@ -206,7 +206,7 @@ function useEditorStoreHook(): EditorStore {
             ...firstFutureEntry.state,
             currentMode: currentThemeState.currentMode,
         });
-        setThemeCheckpoint(firstFutureEntry.state);
+        // setThemeCheckpoint(firstFutureEntry.state);
         setHistory(updatedHistory);
         setFuture(newFuture);
     };
