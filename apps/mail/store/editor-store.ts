@@ -183,7 +183,7 @@ function useEditorStoreHook(): EditorStore {
             ...lastHistoryEntry.state,
             currentMode: currentThemeState.currentMode,
         });
-        setThemeCheckpoint(lastHistoryEntry.state);
+        // setThemeCheckpoint(lastHistoryEntry.state);
         setHistory(newHistory);
         setFuture(newFuture);
     };
