@@ -151,7 +151,7 @@ export default function ThemeEditorControls() {
             </div>
 
             {/* Font section */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
                 <Badge variant="secondary" className="px-3 py-1.5 capitalize">
                     Font family
                 </Badge>
@@ -173,7 +173,7 @@ export default function ThemeEditorControls() {
                         ))}
                     </SelectContent>
                 </Select>
-            </div>
+            </div> */}
 
             {/* Radius section */}
             <div className="space-y-4">

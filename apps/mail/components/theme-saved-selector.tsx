@@ -24,9 +24,9 @@ export function UserThemeSelector() {
 
     return (
         <div className="space-y-4">
-            <Badge variant="secondary" className="px-3 py-1.5">
+            <p className="px-3 py-0 text-sm font-medium">
                 Saved Themes
-            </Badge>
+            </p>
             <Select
                 value={selectedId}
                 onValueChange={(val) => {

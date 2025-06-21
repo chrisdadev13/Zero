@@ -68,4 +68,16 @@ export const themesRouter = router({
         const themes = await db.findThemesByUser(ctx.sessionUser.id);
         return themes;
     }),
+    listPublic: privateProcedure.input(z.object({
+        page: z.number().optional().default(0),
+        limit: z.number().optional().default(20),
+    })).query(async ({ ctx, input }) => {
+        const { page = 0, limit = 20 } = input;
+        const db = getZeroDB(ctx.sessionUser.id);
+        const themes = await db.findPublicThemes(limit, page * limit);
+        return {
+            themes,
+            hasMore: themes.length === limit,
+        };
+    }),
 });

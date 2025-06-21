@@ -27,9 +27,9 @@ export function ThemePresetSelector() {
 
     return (
         <div className="space-y-4">
-            <Badge variant="secondary" className="px-3 py-1.5">
+            <p className="px-3 py-0 text-sm font-medium">
                 Theme Preset
-            </Badge>
+            </p>
 
             <Select
                 onValueChange={(val) => applyThemePreset(val)}

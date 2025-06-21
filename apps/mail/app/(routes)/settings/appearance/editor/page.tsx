@@ -10,12 +10,14 @@ import { useTRPC } from "@/providers/query-provider";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import { Switch } from '@/components/ui/switch';
 
 export default function ThemeEditorPage() {
     const t = useTranslations();
     const { themeState } = useEditorStore();
     const { resetToCurrentPreset } = useEditorStore();
     const [name, setName] = useState("");
+    const [isPublic, setIsPublic] = useState(false);
     const trpc = useTRPC();
     const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
 
@@ -30,7 +32,7 @@ export default function ThemeEditorPage() {
                 theme: {
                     name: name.trim(),
                     styles: themeState.styles,
-                    public: false,
+                    public: isPublic,
                 },
             }),
             {
@@ -53,6 +55,10 @@ export default function ThemeEditorPage() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm">Public</span>
+                            <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+                        </div>
                         <Button onClick={handleSave}>{t("common.actions.save")}</Button>
                         <button
                             type="button"

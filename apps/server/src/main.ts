@@ -374,6 +374,16 @@ class ZeroDB extends DurableObject {
   async setThemeForConnection(connectionId: string, themeId: string) {
     return await this.db.update(connection).set({ currentThemeId: themeId }).where(eq(connection.id, connectionId));
   }
+
+  // Fetch public themes with simple pagination support
+  async findPublicThemes(limit: number = 20, offset: number = 0): Promise<(typeof theme.$inferSelect)[]> {
+    return await this.db.query.theme.findMany({
+      where: eq(theme.public, true),
+      orderBy: desc(theme.createdAt),
+      limit,
+      offset,
+    });
+  }
 }
 
 export default class extends WorkerEntrypoint<typeof env> {

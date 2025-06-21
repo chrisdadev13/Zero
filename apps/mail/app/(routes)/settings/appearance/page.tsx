@@ -16,6 +16,7 @@ import * as z from 'zod';
 import { ThemePresetSelector } from '@/components/theme-preset-selector';
 import { UserThemeSelector } from '@/components/theme-saved-selector';
 import { ThemeToggle } from '@/components/theme/toggle-theme';
+import { Link } from 'react-router';
 
 const formSchema = z.object({
   colorTheme: z.enum(['dark', 'light', 'system', '']),
@@ -75,10 +76,16 @@ export default function AppearancePage() {
           <form id="appearance-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4 -ml-2">
               <ThemeToggle />
+
             </div>
             <ThemePresetSelector />
             <UserThemeSelector />
           </form>
+          <Link to="editor">
+            <Button variant="secondary" size="sm" className="mt-2">
+              Create / Edit Theme
+            </Button>
+          </Link>
         </Form>
       </SettingsCard>
     </div>
