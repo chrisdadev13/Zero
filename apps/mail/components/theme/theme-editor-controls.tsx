@@ -1,7 +1,7 @@
 import { useEditorStore } from "@/store/editor-store";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import Color from "color";
+import * as culori from "culori";
 import { AlertTriangle } from "lucide-react";
 import { COMMON_STYLES } from "@/config/theme";
 import { useTranslations } from "use-intl";
@@ -44,13 +44,21 @@ const CONTRAST_PAIR: Record<string, string> = {
     "accent-foreground": "accent",
 };
 
-function getLuminance(hex: string): number {
-    const c = Color(hex).rgb();
-    const [r, g, b] = [c.red(), c.green(), c.blue()].map((v) => {
-        const channel = v / 255;
-        return channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+function getLuminance(colorStr: string): number {
+    try {
+        const parsed = culori.parse(colorStr);
+        if (!parsed) return 0;
+        // Convert to RGB in linear space (values 0..1)
+        const rgb = culori.converter("rgb")(parsed) as unknown as { r: number; g: number; b: number };
+        const [r, g, b] = [rgb.r, rgb.g, rgb.b].map((v) => {
+            const channel = v;
+            return channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    } catch (err) {
+        console.error("Failed to compute luminance for", colorStr, err);
+        return 0;
+    }
 }
 
 function getContrastRatio(colA: string, colB: string): number {
