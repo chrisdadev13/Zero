@@ -6,7 +6,7 @@ import { useTRPC } from "@/providers/query-provider";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
-import type { ThemeStyles } from "@/types/themes";
+import type { ThemeStyles } from "@/lib/themes";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -62,7 +62,7 @@ export function ThemeMarketplace() {
                 theme: {
                     name: theme.name,
                     styles: theme.styles,
-                    public: true,
+                    public: false,
                 },
             });
 

@@ -380,6 +380,23 @@ class ZeroDB extends DurableObject {
       offset,
     });
   }
+
+  async deleteTheme(userId: string, themeId: string) {
+    // Remove the theme only if it belongs to the current user. Also clear the theme reference
+    // from any of the user's connections that might still point at it to avoid dangling refs.
+    return await this.db.transaction(async (tx) => {
+      // First, null-out currentThemeId on connections referencing this theme.
+      await tx
+        .update(connection)
+        .set({ currentThemeId: null })
+        .where(and(eq(connection.userId, userId), eq(connection.currentThemeId, themeId)));
+
+      // Then, actually delete the theme row.
+      return await tx
+        .delete(theme)
+        .where(and(eq(theme.id, themeId), eq(theme.userId, userId)));
+    });
+  }
 }
 
 export default class extends WorkerEntrypoint<typeof env> {

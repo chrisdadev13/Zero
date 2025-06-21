@@ -10,7 +10,6 @@ type Theme = "dark" | "light";
 type ThemeProviderProps = {
     children: React.ReactNode;
     defaultTheme?: Theme;
-    connectionId?: string;
 };
 
 type Coords = { x: number; y: number };

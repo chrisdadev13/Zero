@@ -72,4 +72,11 @@ export const themesRouter = router({
             hasMore: themes.length === limit,
         };
     }),
+    delete: privateProcedure.input(z.object({
+        themeId: z.string(),
+    })).mutation(async ({ ctx, input }) => {
+        const db = getZeroDB(ctx.sessionUser.id);
+        await db.deleteTheme(ctx.sessionUser.id, input.themeId);
+        return { success: true };
+    }),
 });
