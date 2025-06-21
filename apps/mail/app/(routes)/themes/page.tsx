@@ -11,7 +11,7 @@ export default function ThemesMarketplacePage() {
     const [page, setPage] = useState(0);
     const limit = 20;
 
-    const { data, isFetching } = useQuery(
+    const { data, isFetching, error } = useQuery(
         trpc.themes.listPublic.queryOptions({ page, limit }),
     );
 
@@ -20,6 +20,11 @@ export default function ThemesMarketplacePage() {
     return (
         <div className="p-6 space-y-6">
             <h1 className="text-2xl font-semibold">Theme Marketplace</h1>
+            {error && (
+                <div className="text-red-500 p-4 rounded-md bg-red-50">
+                    Failed to load themes. Please try again.
+                </div>
+            )}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {themes.map((t: any) => (
                     <Card key={t.id}>
