@@ -33,7 +33,7 @@ export default function ThemesMarketplacePage() {
                         </CardHeader>
                         <CardContent>
                             <div className="h-16 w-full rounded-md bg-muted" />
-                            <p className="mt-2 text-xs text-muted-foreground">Created by {t.userId.slice(0, 8)}…</p>
+                            <p className="mt-2 text-xs text-muted-foreground">Created by {t.userId.slice(0, 8) || 'Unknown'}…</p>
                         </CardContent>
                     </Card>
                 ))}
