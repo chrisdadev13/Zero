@@ -3,10 +3,7 @@
 import { defaultDarkThemeStyles, defaultLightThemeStyles } from "../config/theme";
 
 export function ThemeScript() {
-    console.log("ThemeScript");
-    console.log(defaultLightThemeStyles);
-    console.log(defaultDarkThemeStyles);
-    const scriptContent = `
+  const scriptContent = `
     (function() {
       const storageKey = "editor-storage";
       const root = document.documentElement;
@@ -42,10 +39,10 @@ export function ThemeScript() {
     })();
   `;
 
-    return (
-        <script
-            dangerouslySetInnerHTML={{ __html: scriptContent }}
-            suppressHydrationWarning
-        />
-    );
+  return (
+    <script
+      dangerouslySetInnerHTML={{ __html: scriptContent }}
+      suppressHydrationWarning
+    />
+  );
 }

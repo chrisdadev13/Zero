@@ -1,29 +1,21 @@
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { PostHogProvider } from '@/lib/posthog-provider';
-import { useSettings } from '@/hooks/use-settings';
 import { Provider as JotaiProvider } from 'jotai';
 import type { PropsWithChildren } from 'react';
 import Toaster from '@/components/ui/toast';
-import { ThemeProvider } from '@/components/themes-provider';
 
-export function ClientProviders({ children, connectionId }: PropsWithChildren<{ connectionId: string | null }>) {
-  const { data } = useSettings();
-
-  const theme = data?.settings.colorTheme || 'system';
+export function ClientProviders({ children }: PropsWithChildren) {
 
   return (
     <NuqsAdapter>
       <JotaiProvider>
-
-        <ThemeProvider defaultTheme="dark" connectionId={connectionId || undefined}>
-          <SidebarProvider>
-            <PostHogProvider>
-              {children}
-              <Toaster />
-            </PostHogProvider>
-          </SidebarProvider>
-        </ThemeProvider>
+        <SidebarProvider>
+          <PostHogProvider>
+            {children}
+            <Toaster />
+          </PostHogProvider>
+        </SidebarProvider>
       </JotaiProvider>
     </NuqsAdapter>
   );

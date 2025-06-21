@@ -73,7 +73,7 @@ export function Layout({ children }: PropsWithChildren) {
       </head>
       <body className="antialiased">
         <ServerProviders messages={messages} locale={locale} connectionId={connectionId}>
-          <ClientProviders connectionId={connectionId || null}>
+          <ClientProviders>
             {children}
           </ClientProviders>
         </ServerProviders>
