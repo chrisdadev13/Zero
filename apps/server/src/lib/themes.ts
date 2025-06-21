@@ -69,6 +69,14 @@ export interface ThemeEditorControlsProps {
     themePromise: Promise<Theme | null>;
 }
 
+export const themePresetSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    styles: themeStylesSchema,
+    createdAt: z.string(),
+    updatedAt: z.string(),
+});
+
 export type ThemePreset = {
     source?: "SAVED" | "BUILT_IN";
     createdAt?: string;
