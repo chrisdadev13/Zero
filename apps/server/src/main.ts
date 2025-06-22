@@ -368,6 +368,22 @@ class ZeroDB extends DurableObject {
   }
 
   async setThemeForConnection(connectionId: string, themeId: string) {
+    const theme = await this.findThemeById(themeId);
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    // used to verify connection exists and then user ownership
+    const connectionExists = await this.findConnectionById(connectionId);
+    if (!connectionExists) {
+      throw new Error('Connection not found');
+    }
+
+    // Verify theme is public or belongs to the user
+    if (!theme.public && theme.userId !== connectionExists.userId) {
+      throw new Error('Unauthorized access to theme');
+    }
+
     return await this.db.update(connection).set({ currentThemeId: themeId }).where(eq(connection.id, connectionId));
   }
 

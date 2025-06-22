@@ -1,9 +1,11 @@
 import * as culori from "culori";
-import type { ColorFormat } from "../types/themes";
 import type { Hsl } from "culori";
 
+export type ColorFormat = "hex" | "rgb" | "hsl" | "oklch";
+
 export const formatNumber = (num?: number) => {
-    if (!num) return "0";
+    if (num === undefined || num === null) return "0";
+
     return num % 1 === 0 ? num : num.toFixed(4);
 };
 

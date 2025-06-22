@@ -40,7 +40,6 @@ export const themesRouter = router({
             styles: themeStylesSchema,
             public: z.boolean().optional(),
         }),
-        public: z.boolean().optional(),
     })).mutation(async ({ ctx, input }) => {
         const { themeId, theme } = input;
         const db = getZeroDB(ctx.sessionUser.id);

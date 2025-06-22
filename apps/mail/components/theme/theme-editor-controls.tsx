@@ -5,6 +5,7 @@ import * as culori from "culori";
 import { AlertTriangle } from "lucide-react";
 import { COMMON_STYLES } from "@/config/theme";
 import { useTranslations } from "use-intl";
+import type { ThemeStyles } from "@/lib/themes";
 
 const COLOR_KEYS: string[] = [
     "background",
@@ -81,14 +82,14 @@ export default function ThemeEditorControls() {
                 styles: {
                     ...themeState.styles,
                     light: {
-                        ...(themeState.styles.light as any),
+                        ...(themeState.styles.light),
                         [key]: value,
-                    } as any,
+                    },
                     dark: {
-                        ...(themeState.styles.dark as any),
+                        ...(themeState.styles.dark),
                         [key]: value,
-                    } as any,
-                } as any,
+                    },
+                },
             });
         } else {
             setThemeState({
@@ -113,12 +114,11 @@ export default function ThemeEditorControls() {
                 </Badge>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {COLOR_KEYS.map((k) => {
-                        // Using `any` cast for dynamic key access because ThemeStyleProps does not allow indexing with string variable
-                        const currentValue = (themeState.styles as any)[mode][k] ?? "#ffffff";
+                        const currentValue = (themeState.styles)[mode][k as keyof ThemeStyles[typeof mode]] ?? "#ffffff";
                         const pairKey = CONTRAST_PAIR[k];
                         let lowContrast = false;
                         if (pairKey) {
-                            const pairVal = (themeState.styles as any)[mode][pairKey] ?? "#fff";
+                            const pairVal = (themeState.styles)[mode][pairKey as keyof ThemeStyles[typeof mode]] ?? "#fff";
                             const ratio = getContrastRatio(currentValue, pairVal);
                             lowContrast = ratio < 3; // WCAG AA for large text is 3
                         }
