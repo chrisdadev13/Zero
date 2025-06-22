@@ -85,6 +85,18 @@ export const earlyAccess = createTable('early_access', {
   hasUsedTicket: text('has_used_ticket').default(''),
 });
 
+export const theme = createTable("theme", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  styles: jsonb("styles").$type<ThemeStyles>().notNull(),
+  public: boolean("public").notNull().default(false),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
+
 export const connection = createTable(
   'connection',
   {
@@ -171,16 +183,4 @@ export const jwks = createTable('jwks', {
   publicKey: text('public_key').notNull(),
   privateKey: text('private_key').notNull(),
   createdAt: timestamp('created_at').notNull(),
-});
-
-export const theme = createTable("theme", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  styles: jsonb("styles").$type<ThemeStyles>().notNull(),
-  public: boolean("public").notNull().default(false),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
 });
