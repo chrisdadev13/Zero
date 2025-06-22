@@ -10,6 +10,7 @@ import {
 
 import { colorFormatter } from "../lib/color-converter";
 import { useTranslations } from "use-intl";
+import { Button } from "@/components/ui/button";
 
 export function ThemePresetSelector() {
     const { themeState, applyThemePreset } = useEditorStore();
@@ -53,6 +54,17 @@ export function ThemePresetSelector() {
                     })}
                 </SelectContent>
             </Select>
+
+            {/* Reset to default button */}
+            {themeState.preset && themeState.preset !== "default" && (
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => applyThemePreset("default")}
+                >
+                    Reset to Default
+                </Button>
+            )}
         </div>
     );
 }

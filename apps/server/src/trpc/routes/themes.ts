@@ -3,6 +3,12 @@ import { getZeroDB } from "../../lib/server-utils";
 import { router, privateProcedure, activeConnectionProcedure } from "../trpc";
 import { themeStylesSchema } from "../../lib/themes";
 
+function assertCanPublish(isFork: boolean) {
+    if (isFork) {
+        throw new Error("You cannot make a theme public if it was forked from another user's theme.");
+    }
+}
+
 export const themesRouter = router({
     getActive: activeConnectionProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);
@@ -17,39 +23,68 @@ export const themesRouter = router({
         const theme = await db.findThemeById(themeId);
         return theme ?? null;
     }),
-    create: privateProcedure.input(z.object({
-        theme: z.object({
-            name: z.string(),
-            styles: themeStylesSchema,
-            public: z.boolean().optional(),
+    create: privateProcedure
+        .input(
+            z.object({
+                theme: z.object({
+                    name: z.string(),
+                    styles: themeStylesSchema,
+                    public: z.boolean().optional(),
+                    sourceThemeId: z.string().optional(),
+                }),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { theme } = input;
+
+            if (theme.public && theme.sourceThemeId) {
+                assertCanPublish(true);
+            }
+
+            const db = getZeroDB(ctx.sessionUser.id);
+            const newTheme = await db.createTheme({
+                id: crypto.randomUUID(),
+                name: theme.name,
+                styles: theme.styles,
+                public: theme.public,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                userId: ctx.sessionUser.id,
+                sourceThemeId: theme.sourceThemeId,
+            });
+            return newTheme;
         }),
-    })).mutation(async ({ ctx, input }) => {
-        const { theme } = input;
-        const db = getZeroDB(ctx.sessionUser.id);
-        const newTheme = await db.createTheme({
-            id: crypto.randomUUID(),
-            name: theme.name,
-            styles: theme.styles,
-            public: theme.public,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            userId: ctx.sessionUser.id,
-        });
-        return newTheme;
-    }),
-    update: privateProcedure.input(z.object({
-        themeId: z.string(),
-        theme: z.object({
-            name: z.string(),
-            styles: themeStylesSchema,
-            public: z.boolean().optional(),
+    update: privateProcedure
+        .input(
+            z.object({
+                themeId: z.string(),
+                theme: z.object({
+                    name: z.string(),
+                    styles: themeStylesSchema,
+                    public: z.boolean().optional(),
+                }),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { themeId, theme } = input;
+            const db = getZeroDB(ctx.sessionUser.id);
+
+            const existing = await db.findThemeById(themeId);
+            if (!existing) {
+                throw new Error("Theme not found");
+            }
+
+            if (existing.userId !== ctx.sessionUser.id) {
+                throw new Error("Unauthorized");
+            }
+
+            if (theme.public && existing.sourceThemeId) {
+                assertCanPublish(true);
+            }
+
+            const updatedTheme = await db.updateTheme(themeId, theme);
+            return updatedTheme;
         }),
-    })).mutation(async ({ ctx, input }) => {
-        const { themeId, theme } = input;
-        const db = getZeroDB(ctx.sessionUser.id);
-        const updatedTheme = await db.updateTheme(themeId, theme);
-        return updatedTheme;
-    }),
     list: privateProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);
         const themes = await db.findThemesByUser(ctx.sessionUser.id);

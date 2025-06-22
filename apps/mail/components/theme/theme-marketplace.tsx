@@ -107,6 +107,7 @@ export function ThemeMarketplace() {
                     name: themeToInstall.name,
                     styles: themeToInstall.styles,
                     public: false,
+                    sourceThemeId: themeToInstall.id,
                 },
             });
 

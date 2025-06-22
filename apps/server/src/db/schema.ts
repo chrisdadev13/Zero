@@ -95,6 +95,8 @@ export const theme = createTable("theme", {
   public: boolean("public").notNull().default(false),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
+  // nullable reference to the original theme this one was forked from
+  sourceThemeId: text("source_theme_id"),
 });
 
 export const connection = createTable(
