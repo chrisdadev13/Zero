@@ -67,6 +67,7 @@ export default function AppearancePage() {
       <SettingsCard
         title={t('pages.settings.appearance.title')}
         description={t('pages.settings.appearance.description')}
+
         footer={
           <Button type="submit" form="appearance-form" disabled={isSaving}>
             {isSaving ? t('common.actions.saving') : t('common.actions.saveChanges')}
@@ -80,7 +81,7 @@ export default function AppearancePage() {
 
             </div>
             {/* Preset themes */}
-            <div className="pt-2">
+            <div>
               <ThemePresetSelector />
             </div>
 
@@ -89,12 +90,9 @@ export default function AppearancePage() {
 
             {/* Public marketplace */}
             <ThemeMarketplace />
+
           </form>
-          <Link to="editor">
-            <Button variant="secondary" size="sm" className="mt-2">
-              {t('common.themeEditor.createEditTheme')}
-            </Button>
-          </Link>
+
         </Form>
       </SettingsCard>
     </div>

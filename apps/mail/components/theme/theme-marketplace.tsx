@@ -10,6 +10,17 @@ import type { ThemeStyles } from "@/lib/themes";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 interface PublicTheme {
     id: string;
@@ -28,9 +39,19 @@ export function ThemeMarketplace() {
     // Search state
     const [query, setQuery] = useState("");
 
-    const { data, isLoading, error } = useQuery(trpc.themes.listPublic.queryOptions({ page: 0, limit: 100 }));
+    // Dialog state
+    const [themeToInstall, setThemeToInstall] = useState<PublicTheme | null>(null);
+    const [installing, setInstalling] = useState(false);
 
-    const themes: PublicTheme[] = (data?.themes as PublicTheme[]) ?? [];
+    // Public marketplace themes
+    const { data: publicData, isLoading, error } = useQuery(
+        trpc.themes.listPublic.queryOptions({ page: 0, limit: 100 }),
+    );
+
+    // User's own installed/created themes – used to avoid duplicate installations
+    const { data: userThemes = [] } = useQuery(trpc.themes.list.queryOptions());
+
+    const themes: PublicTheme[] = (publicData?.themes as PublicTheme[]) ?? [];
 
     const mode = (themeState.currentMode ?? "light") as "light" | "dark";
 
@@ -40,12 +61,13 @@ export function ThemeMarketplace() {
 
     const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
 
-    const handleSelect = async (theme: PublicTheme) => {
+    const handleSelect = (theme: PublicTheme) => {
         if (!theme.styles[mode]) {
             console.error(`Theme styles missing for mode: ${mode}`);
             return;
         }
-        // If current user already owns theme, just apply
+
+        // If user already owns the public theme
         if (theme.userId === session?.user.id) {
             setThemeState({
                 ...themeState,
@@ -56,28 +78,53 @@ export function ThemeMarketplace() {
             return;
         }
 
-        // Otherwise, install (copy) the theme under user's account
+        // Check user's private themes for duplicates
+        const existingTheme = (userThemes as PublicTheme[]).find(
+            (t) => t.name.toLowerCase() === theme.name.toLowerCase(),
+        );
+
+        if (existingTheme) {
+            setThemeState({
+                ...themeState,
+                id: existingTheme.id,
+                styles: existingTheme.styles,
+                preset: undefined,
+            });
+            return;
+        }
+
+        // Need installation confirmation
+        setThemeToInstall(theme);
+    };
+
+    // Confirm install after user approval
+    const confirmInstall = async () => {
+        if (!themeToInstall) return;
+        setInstalling(true);
         try {
             const newTheme = await createTheme({
                 theme: {
-                    name: theme.name,
-                    styles: theme.styles,
+                    name: themeToInstall.name,
+                    styles: themeToInstall.styles,
                     public: false,
                 },
             });
 
-            // Invalidate user's theme list and marketplace (optional)
             queryClient.invalidateQueries({ queryKey: trpc.themes.list.queryKey() });
 
             setThemeState({
                 ...themeState,
                 id: newTheme.id,
-                styles: theme.styles,
+                styles: themeToInstall.styles,
                 preset: undefined,
             });
+
+            setThemeToInstall(null);
         } catch (err) {
             console.error("Failed to install theme", err);
             toast.error(t("common.settings.failedToSave"));
+        } finally {
+            setInstalling(false);
         }
     };
 
@@ -99,13 +146,22 @@ export function ThemeMarketplace() {
 
     return (
         <div className="space-y-4">
-            <p className="text-sm font-medium">{t("common.themeEditor.marketplace")}</p>
+            <div className="flex items-center justify-between">
+                <p className="text-lg font-medium">{t("common.themeEditor.marketplace")}</p>
+                <div>
+                    <Link to="editor">
+                        <Button variant="secondary" size="sm">
+                            {t('common.themeEditor.createEditTheme')}
+                        </Button>
+                    </Link>
+                </div>
+            </div>
             <Input
                 placeholder={t("common.themeEditor.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
                 {filtered.map((theme: PublicTheme) => (
                     <ThemeCard
                         key={theme.id}
@@ -118,6 +174,34 @@ export function ThemeMarketplace() {
             {filtered.length === 0 && (
                 <p className="text-muted-foreground text-sm">{t("common.themeEditor.noThemesFound")}</p>
             )}
+
+            {/* Install confirmation dialog */}
+            <Dialog open={!!themeToInstall} onOpenChange={(open) => !open && setThemeToInstall(null)}>
+                <DialogContent showOverlay>
+                    <DialogHeader>
+                        <DialogTitle>Install Theme</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to install the "{themeToInstall?.name ?? ""}" theme?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-4">
+                        <DialogClose asChild>
+                            <Button variant="secondary" disabled={installing}>
+                                {t("common.actions.cancel")}
+                            </Button>
+                        </DialogClose>
+                        <Button onClick={confirmInstall} disabled={installing}>
+                            {installing ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" /> Installing...
+                                </span>
+                            ) : (
+                                'Install'
+                            )}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 } 

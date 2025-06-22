@@ -1,13 +1,5 @@
 import { useTRPC } from "@/providers/query-provider";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { useEditorStore } from "@/store/editor-store";
-import { cn } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +7,7 @@ import { Globe2, Lock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
+import { ThemeCard } from "@/components/theme/theme-card";
 
 export function UserThemeSelector() {
     const trpc = useTRPC();
@@ -38,6 +31,9 @@ export function UserThemeSelector() {
     }, [themeState.id]);
 
     const selectedTheme = useMemo(() => (themes as any[]).find((t) => t.id === selectedId), [themes, selectedId]);
+
+    // Determine current UI mode to preview correct styles
+    const mode = (themeState.currentMode ?? "light") as "light" | "dark";
 
     const togglePublic = async () => {
         if (!selectedTheme) return;
@@ -80,34 +76,37 @@ export function UserThemeSelector() {
         <div className="space-y-4">
             <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
 
-            <Select
-                value={selectedId}
-                onValueChange={(val) => {
-                    setSelectedId(val);
-                    const selected = (themes as any[]).find((t) => t.id === val);
-                    if (selected) {
-                        setThemeState({
-                            ...themeState,
-                            id: selected.id,
-                            styles: selected.styles as any,
-                            preset: undefined,
-                        });
-                    }
-                }}
-            >
-                <SelectTrigger className="w-64 capitalize">
-                    <SelectValue placeholder={t("common.themeEditor.selectTheme")} />
-                </SelectTrigger>
-                <SelectContent className="w-64">
-                    {(themes as any[]).map((theme) => (
-                        <SelectItem key={theme.id} value={theme.id} className={cn("capitalize flex items-center gap-2")}>
-                            {theme.name}
-                            {theme.public ? <Globe2 size={14} className="text-muted-foreground" /> : <Lock size={14} className="text-muted-foreground" />}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+            {/* Saved themes as cards */}
+            <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
+                {(themes as any[]).map((theme) => (
+                    <div key={theme.id} className="relative">
+                        <ThemeCard
+                            name={theme.name}
+                            styles={theme.styles[mode] ?? {}}
+                            selected={selectedId === theme.id}
+                            onSelect={() => {
+                                setSelectedId(theme.id);
+                                setThemeState({
+                                    ...themeState,
+                                    id: theme.id,
+                                    styles: theme.styles as any,
+                                    preset: undefined,
+                                });
+                            }}
+                        />
+                        {/* Public/Private icon overlay */}
+                        <div className="absolute top-2 left-2">
+                            {theme.public ? (
+                                <Globe2 size={14} className="text-background/80" />
+                            ) : (
+                                <Lock size={14} className="text-background/80" />
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
 
+            {/* Controls for selected theme */}
             {selectedTheme && (
                 <div className="flex items-center gap-2 pt-1">
                     <Switch checked={selectedTheme.public} onCheckedChange={togglePublic} />
