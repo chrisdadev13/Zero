@@ -20,7 +20,7 @@ import { MainWorkflow, ThreadWorkflow, ZeroWorkflow } from './pipelines';
 import { oAuthDiscoveryMetadata } from 'better-auth/plugins';
 import { getZeroDB, verifyToken } from './lib/server-utils';
 import { EProviders, type ISubscribeBatch } from './types';
-import { eq, and, desc, asc, inArray } from 'drizzle-orm';
+import { eq, and, desc, asc, inArray, count } from 'drizzle-orm';
 import { contextStorage } from 'hono/context-storage';
 import { defaultUserSettings } from './lib/schemas';
 import { createLocalJWKSet, jwtVerify } from 'jose';
@@ -415,7 +415,13 @@ class ZeroDB extends DurableObject {
         .where(and(eq(theme.id, themeId), eq(theme.userId, userId)));
     });
   }
+
+  async countPublicThemes(): Promise<number> {
+    const [result] = await this.db.select({ count: count() }).from(theme).where(eq(theme.public, true));
+    return result?.count ?? 0;
+  }
 }
+
 
 export default class extends WorkerEntrypoint<typeof env> {
   db: DB | undefined;

@@ -105,9 +105,11 @@ export const themesRouter = router({
             };
         }
 
+        const totalCount = await db.countPublicThemes();
+
         return {
             themes,
-            hasMore: themes.length === limit,
+            hasMore: (page + 1) * limit < totalCount,
         };
     }),
     delete: privateProcedure.input(z.object({
