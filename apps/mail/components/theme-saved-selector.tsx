@@ -51,7 +51,6 @@ export function UserThemeSelector() {
                     styles: selectedTheme.styles,
                     public: !selectedTheme.public,
                 },
-                public: !selectedTheme.public,
             });
             await refetch();
             queryClient.invalidateQueries({ queryKey: trpc.themes.listPublic.queryKey() });

@@ -1,17 +1,21 @@
 import z from "zod";
 import { getZeroDB } from "../../lib/server-utils";
 import { router, privateProcedure, activeConnectionProcedure } from "../trpc";
-import { TRPCError } from "@trpc/server";
 import { themeStylesSchema } from "../../lib/themes";
 
 export const themesRouter = router({
     getActive: activeConnectionProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);
 
-        const theme = await db.findThemeById(ctx.activeConnection.currentThemeId ?? "");
-        if (!theme) throw new TRPCError({ code: "NOT_FOUND", message: "Theme not found" });
+        const themeId = ctx.activeConnection.currentThemeId;
 
-        return theme;
+        if (!themeId) {
+            // No theme has been set for this connection yet
+            return null;
+        }
+
+        const theme = await db.findThemeById(themeId);
+        return theme ?? null;
     }),
     create: privateProcedure.input(z.object({
         theme: z.object({
