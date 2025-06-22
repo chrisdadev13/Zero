@@ -8,13 +8,19 @@ import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import { ThemeCard } from "@/components/theme/theme-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "@zero/server/trpc";
+
+type Theme = inferRouterOutputs<AppRouter>["themes"]["list"][number];
 
 export function UserThemeSelector() {
     const trpc = useTRPC();
     const { themeState, setThemeState } = useEditorStore();
     const t = useTranslations();
 
-    const { data: themes = [], refetch } = useQuery(trpc.themes.list.queryOptions());
+    const { data: themes = [], refetch, error, isLoading } = useQuery(trpc.themes.list.queryOptions());
+
     const queryClient = useQueryClient();
 
     const { mutateAsync: updateTheme } = useMutation(trpc.themes.update.mutationOptions());
@@ -30,7 +36,7 @@ export function UserThemeSelector() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [themeState.id]);
 
-    const selectedTheme = useMemo(() => (themes as any[]).find((t) => t.id === selectedId), [themes, selectedId]);
+    const selectedTheme = useMemo(() => (themes as Theme[]).find((t) => t.id === selectedId), [themes, selectedId]);
 
     // Determine current UI mode to preview correct styles
     const mode = (themeState.currentMode ?? "light") as "light" | "dark";
@@ -72,13 +78,42 @@ export function UserThemeSelector() {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="space-y-4">
+                <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
+                <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="flex flex-col items-center">
+                            <Skeleton className="w-36 aspect-square rounded-lg" />
+                            <Skeleton className="mt-2 h-3 w-24" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="space-y-2">
+                <p className="text-sm text-destructive">
+                    {t("common.themeEditor.failedToLoadThemes")}
+                </p>
+                <Button type="button" size="sm" onClick={() => refetch()}>
+                    {t("common.actions.refresh")}
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-4">
             <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
 
             {/* Saved themes as cards */}
             <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
-                {(themes as any[]).map((theme) => (
+                {(themes as Theme[]).map((theme) => (
                     <div key={theme.id} className="relative">
                         <ThemeCard
                             name={theme.name}
@@ -89,7 +124,7 @@ export function UserThemeSelector() {
                                 setThemeState({
                                     ...themeState,
                                     id: theme.id,
-                                    styles: theme.styles as any,
+                                    styles: theme.styles,
                                     preset: undefined,
                                 });
                             }}
