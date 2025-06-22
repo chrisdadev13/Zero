@@ -82,7 +82,11 @@
       "themeEditorTitle": "Editor de temas",
       "themeEditorDescription": "Ajusta estilos y guarda como tema personalizado.",
       "publish": "Publicar",
-      "reset": "Restablecer"
+      "reset": "Restablecer",
+      "installThemeTitle": "Instalar tema",
+      "installThemeDescription": "¿Estás seguro de que quieres instalar el tema {name}?",
+      "installTheme": "Instalar",
+      "installing": "Instalando..."
     },
     "commandPalette": {
       "title": "Paleta de Comandos",

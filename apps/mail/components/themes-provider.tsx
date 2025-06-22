@@ -4,6 +4,7 @@ import { applyThemeToElement } from "../lib/apply-theme";
 import { useThemePresetFromUrl } from "../hooks/use-theme-preset-from-url";
 import { useTRPC } from "@/providers/query-provider";
 import { useQuery } from "@tanstack/react-query";
+import type { Theme as ThemeType } from "@/lib/themes";
 
 type Theme = "dark" | "light";
 
@@ -39,15 +40,14 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     });
 
     useEffect(() => {
-        if (dbTheme && (dbTheme as any).styles) {
+        if (dbTheme && (dbTheme as ThemeType).styles) {
             (setThemeState as any)({
                 ...themeState,
-                styles: (dbTheme as any).styles,
-                id: (dbTheme as any).id,
+                styles: (dbTheme as ThemeType).styles,
+                id: (dbTheme as ThemeType).id,
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [(dbTheme as any)?.id]);
+    }, [(dbTheme as ThemeType)?.id]);
 
     // Handle theme preset from URL
     useThemePresetFromUrl();

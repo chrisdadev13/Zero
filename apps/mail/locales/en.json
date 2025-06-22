@@ -82,7 +82,11 @@
       "themeEditorTitle": "Theme Editor",
       "themeEditorDescription": "Adjust styles and save as a custom theme.",
       "publish": "Publish",
-      "reset": "Reset"
+      "reset": "Reset",
+      "installThemeTitle": "Install Theme",
+      "installThemeDescription": "Are you sure you want to install the \"{name}\" theme?",
+      "installTheme": "Install",
+      "installing": "Installing..."
     },
     "commandPalette": {
       "title": "Command Palette",

@@ -179,9 +179,9 @@ export function ThemeMarketplace() {
             <Dialog open={!!themeToInstall} onOpenChange={(open) => !open && setThemeToInstall(null)}>
                 <DialogContent showOverlay>
                     <DialogHeader>
-                        <DialogTitle>Install Theme</DialogTitle>
+                        <DialogTitle>{t("common.themeEditor.installThemeTitle")}</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to install the "{themeToInstall?.name ?? ""}" theme?
+                            {t("common.themeEditor.installThemeDescription", { name: themeToInstall?.name ?? "" })}
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="mt-4">
@@ -193,10 +193,10 @@ export function ThemeMarketplace() {
                         <Button onClick={confirmInstall} disabled={installing}>
                             {installing ? (
                                 <span className="flex items-center gap-2">
-                                    <Loader2 className="h-4 w-4 animate-spin" /> Installing...
+                                    <Loader2 className="h-4 w-4 animate-spin" /> {t("common.themeEditor.installing")}
                                 </span>
                             ) : (
-                                'Install'
+                                t("common.themeEditor.installTheme")
                             )}
                         </Button>
                     </DialogFooter>
