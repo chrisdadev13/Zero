@@ -75,12 +75,6 @@ export default function AppearancePage() {
             </Button>
           </Link>
         }
-
-        footer={
-          <Button type="submit" form="appearance-form" disabled={isSaving}>
-            {isSaving ? t('common.actions.saving') : t('common.actions.saveChanges')}
-          </Button>
-        }
       >
         <Form {...form}>
           <form id="appearance-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -95,6 +89,9 @@ export default function AppearancePage() {
 
             {/* User's saved themes */}
             <UserThemeSelector />
+            <Button type="submit" form="appearance-form" disabled={isSaving}>
+              {isSaving ? t('common.actions.saving') : t('common.actions.saveChanges')}
+            </Button>
 
             {/* Public marketplace */}
             <ThemeMarketplace />
