@@ -2,7 +2,7 @@ import { useTRPC } from "@/providers/query-provider";
 import { useEditorStore } from "@/store/editor-store";
 import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Globe2, Lock, Trash2, Loader2 } from "lucide-react";
+import { Globe2, Lock, Trash2, Loader2, PenLine } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,6 @@ import { ThemeCard } from "@/components/theme/theme-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@zero/server/trpc";
-import {
-    Tooltip,
-    TooltipTrigger,
-    TooltipContent,
-    TooltipProvider,
-} from "@/components/ui/tooltip";
 import {
     Dialog,
     DialogContent,
@@ -26,6 +20,8 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { defaultThemeState } from "@/config/theme";
+import { Link } from "react-router";
+import { Switch } from "@/components/ui/switch";
 
 type Theme = inferRouterOutputs<AppRouter>["themes"]["list"][number];
 
@@ -112,7 +108,12 @@ export function UserThemeSelector() {
     if (isLoading) {
         return (
             <div className="space-y-4">
-                <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
+                <div className="flex items-center justify-between">
+                    <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
+                    <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        {t("common.themeEditor.themeCount", { count: themes.length })}
+                    </span>
+                </div>
                 <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
                     {Array.from({ length: 8 }).map((_, i) => (
                         <div key={i} className="flex flex-col items-center">
@@ -140,7 +141,12 @@ export function UserThemeSelector() {
 
     return (
         <div className="space-y-4">
-            <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
+            <div className="flex items-center justify-between">
+                <p className="py-0 text-sm font-medium">{t("common.themeEditor.savedThemes")}</p>
+                <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                    {t("common.themeEditor.themeCount", { count: themes.length })}
+                </span>
+            </div>
 
             {/* Saved themes as cards */}
             <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
@@ -161,83 +167,98 @@ export function UserThemeSelector() {
                             }}
                         />
                         {/* Public/Private icon overlay */}
-                        <div className="absolute top-2 left-2">
+                        <div className="absolute top-2 left-2 rounded-full bg-background/75 backdrop-blur-sm p-1">
                             {theme.public ? (
-                                <Globe2 size={14} className="text-background/80" />
+                                <Globe2 size={12} className="text-muted-foreground" />
                             ) : (
-                                <Lock size={14} className="text-background/80" />
+                                <>
+                                    <Lock size={12} className="text-muted-foreground" />
+                                </>
                             )}
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Controls for selected theme */}
             {selectedTheme && (
                 <>
-                    <div className="flex items-center gap-2 pt-1">
+                    {/* Theme configuration panel */}
+                    <div className="border rounded-md p-4 space-y-4">
+                        <p className="text-sm font-medium">{t("common.themeEditor.configurationTitle")}</p>
+
+                        {/* Public / Private toggle */}
                         {canPublish && (
-                            <>
-                                <TooltipProvider delayDuration={300}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="secondary"
-                                                onClick={togglePublic}
-                                                disabled={isUpdating}
-                                                className="flex items-center gap-1"
-                                            >
-                                                {selectedTheme.public ? (
-                                                    <>
-                                                        <Globe2 size={14} />
-                                                        <span>Public</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Lock size={14} />
-                                                        <span>Private</span>
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            {selectedTheme.public ? "Make private" : "Make public"}
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium">
+                                        {selectedTheme.public ? t("common.themeEditor.publicTheme") : t("common.themeEditor.privateTheme")}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {selectedTheme.public
+                                            ? t("common.themeEditor.publicThemeDescription")
+                                            : t("common.themeEditor.privateThemeDescription")}
+                                    </p>
+                                </div>
+                                <Switch
+                                    checked={selectedTheme.public}
+                                    disabled={isUpdating}
+                                    onCheckedChange={(checked) => {
+                                        if (checked !== selectedTheme.public) {
+                                            togglePublic();
+                                        }
+                                    }}
+                                />
+                            </div>
                         )}
-                        <TooltipProvider delayDuration={300}>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => setConfirmOpen(true)}
-                                        className="ml-auto flex items-center gap-1"
-                                        disabled={isDeleting}
-                                    >
-                                        {isDeleting ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <Trash2 size={14} />
-                                        )}
-                                        <span>{isDeleting ? "Deleting..." : "Delete"}</span>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Delete theme</TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+
+                        {/* Action buttons */}
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                            {/* Reset to default */}
+                            {themeState.id && (
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => {
+                                        applyThemePreset("default");
+                                        setSelectedId("");
+                                    }}
+                                >
+                                    {t("common.themeEditor.resetToDefault")}
+                                </Button>
+                            )}
+
+                            {/* Edit theme */}
+                            <Link to="editor">
+                                <Button type="button" size="sm" variant="outline" className="flex items-center gap-1">
+                                    <PenLine size={14} /> {t("common.themeEditor.editTheme")}
+                                </Button>
+                            </Link>
+
+                            {/* Delete */}
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="ml-auto flex items-center gap-1"
+                                onClick={() => setConfirmOpen(true)}
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Trash2 size={14} />
+                                )}
+                                <span>{isDeleting ? t("common.themeEditor.deletingTheme") : t("common.themeEditor.deleteTheme")}</span>
+                            </Button>
+                        </div>
                     </div>
                     <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
                         <DialogContent showOverlay>
                             <DialogHeader>
-                                <DialogTitle>Delete Theme</DialogTitle>
+                                <DialogTitle>{t("common.themeEditor.deleteThemeTitle")}</DialogTitle>
                                 <DialogDescription>
-                                    {`Are you sure you want to delete the theme "${selectedTheme.name}"? This action cannot be undone.`}
+                                    {t("common.themeEditor.deleteThemeDescription", { name: selectedTheme?.name })}
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter className="mt-4">
@@ -258,22 +279,6 @@ export function UserThemeSelector() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-
-                    {/* Reset to default button */}
-                    {themeState.id && (
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            className="mt-4"
-                            onClick={() => {
-                                applyThemePreset("default");
-                                setSelectedId("");
-                            }}
-                        >
-                            Reset to Default
-                        </Button>
-                    )}
                 </>
             )}
         </div>

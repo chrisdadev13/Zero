@@ -86,7 +86,19 @@
       "installThemeTitle": "Install Theme",
       "installThemeDescription": "Are you sure you want to install the \"{name}\" theme?",
       "installTheme": "Install",
-      "installing": "Installing..."
+      "installing": "Installing...",
+      "themeCount": "{count, plural, one {# theme} other {# themes}}",
+      "configurationTitle": "Theme Configuration",
+      "publicTheme": "Public Theme",
+      "privateTheme": "Private Theme",
+      "publicThemeDescription": "Everyone can see and use this theme",
+      "privateThemeDescription": "Only you can see and use this theme",
+      "resetToDefault": "Reset to Default",
+      "editTheme": "Edit Theme",
+      "deleteThemeTitle": "Delete Theme",
+      "deleteThemeDescription": "Are you sure you want to delete the \"{name}\" theme? This action cannot be undone.",
+      "deletingTheme": "Deleting theme...",
+      "deleteTheme": "Delete theme"
     },
     "commandPalette": {
       "title": "Command Palette",

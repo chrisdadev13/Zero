@@ -8,7 +8,9 @@ export interface ThemeCardProps {
 import { cn } from "@/lib/utils";
 import { colorFormatter } from "@/lib/color-converter";
 import { useTranslations } from "use-intl";
-import { Check } from "lucide-react";
+import { Check, Edit3 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router";
 
 export function ThemeCard({ name, styles, selected, onSelect }: ThemeCardProps) {
     const t = useTranslations();
@@ -18,76 +20,75 @@ export function ThemeCard({ name, styles, selected, onSelect }: ThemeCardProps) 
         return colorFormatter(styles[key] ?? "#000", "hsl", "4");
     };
 
+    // Build an array of colors to preview – pick common tokens if available
+    const colorKeys = [
+        "primary",
+        "secondary",
+        "accent",
+        "foreground",
+    ].filter((k) => styles[k]);
+
+    const colors = colorKeys.map((k) => getColor(k));
+
     return (
         <button
             type="button"
             onClick={onSelect}
             className={cn(
-                "w-36 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-all",
-                selected && "ring-2 ring-primary"
+                "relative group cursor-pointer transition-all duration-200 w-36 rounded-lg focus:outline-none",
+                selected
+                    ? "ring-2 ring-primary ring-offset-2"
+                    : "hover:ring-2 hover:ring-gray-300 hover:ring-offset-2",
             )}
             aria-label={t("common.themeEditor.selectThemeAria", { name })}
             aria-pressed={selected}
         >
-            <div className="relative">
-                {/* Theme preview miniature */}
-                <div
-                    className="w-full aspect-square rounded-lg p-2 relative overflow-hidden"
-                    style={{ backgroundColor: getColor("muted") }}
-                >
-                    {selected && (
-                        <div className="absolute top-1 right-1 bg-background/75 backdrop-blur-sm rounded-full p-0.5">
-                            <Check className="w-3 h-3 text-primary" />
+            <Card className="overflow-hidden">
+                <CardContent className="p-0">
+                    {/* Theme Preview */}
+                    <div className="aspect-[4/3] bg-white p-4 relative">
+                        {/* Window Controls */}
+                        <div className="flex gap-1 mb-3">
+                            <div className="h-2 w-2 rounded-full bg-red-400" />
+                            <div className="h-2 w-2 rounded-full bg-yellow-400" />
+                            <div className="h-2 w-2 rounded-full bg-green-400" />
                         </div>
-                    )}
-                    {/* Browser chrome - header */}
-                    <div
-                        className="rounded-t-md p-2 mb-1"
-                        style={{ backgroundColor: getColor("card") }}
-                    >
-                        <div className="flex gap-1">
-                            <div
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: getColor("muted-foreground") }}
-                            />
-                            <div
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: getColor("muted-foreground") }}
-                            />
-                            <div
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: getColor("muted-foreground") }}
-                            />
+
+                        {/* Color Bars */}
+                        <div className="space-y-2">
+                            {colors.map((c, idx) => (
+                                <div
+                                    key={idx}
+                                    className="h-2 rounded"
+                                    style={{ backgroundColor: c, width: `${100 - idx * 20}%` }}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Selection Indicator */}
+                        {selected && (
+                            <div className="absolute top-2 right-2 rounded-full bg-primary p-1 text-white">
+                                <Check className="h-3 w-3" />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Theme Name */}
+                    <div className="border-t p-3">
+                        <div className="flex items-center justify-between">
+                            <span className="truncate text-sm font-medium">{name}</span>
+                            <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+
+                                <Link to="editor">
+                                    <span className="inline-flex h-6 w-6 items-center justify-center rounded hover:bg-muted">
+                                        <Edit3 className="h-3 w-3" />
+                                    </span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                    {/* Content area */}
-                    <div
-                        className="rounded-b-md p-2 h-[calc(100%-2.5rem)] space-y-2"
-                        style={{ backgroundColor: getColor("background") }}
-                    >
-                        <div
-                            className="h-2 rounded w-4/5"
-                            style={{ backgroundColor: getColor("primary") }}
-                        />
-                        <div
-                            className="h-2 rounded w-3/5"
-                            style={{ backgroundColor: getColor("secondary") }}
-                        />
-                        <div
-                            className="h-2 rounded w-4/5"
-                            style={{ backgroundColor: getColor("accent") }}
-                        />
-                        <div
-                            className="h-2 rounded w-2/5"
-                            style={{ backgroundColor: getColor("primary") }}
-                        />
-                    </div>
-                </div>
-            </div>
-            {/* Theme name */}
-            <p className="mt-2 text-xs font-medium text-center truncate w-full">
-                {name}
-            </p>
+                </CardContent>
+            </Card>
         </button>
     );
 } 

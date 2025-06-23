@@ -86,7 +86,19 @@
       "installThemeTitle": "Instalar tema",
       "installThemeDescription": "¿Estás seguro de que quieres instalar el tema {name}?",
       "installTheme": "Instalar",
-      "installing": "Instalando..."
+      "installing": "Instalando...",
+      "configurationTitle": "Configuración de tema",
+      "publicTheme": "Tema público",
+      "privateTheme": "Tema privado",
+      "publicThemeDescription": "Todos pueden ver y usar este tema",
+      "privateThemeDescription": "Solo tú puedes ver y usar este tema",
+      "resetToDefault": "Restablecer a predeterminado",
+      "editTheme": "Editar tema",
+      "themeCount": "{count, plural, one {# tema} other {# temas}}",
+      "deleteThemeTitle": "Eliminar tema",
+      "deleteThemeDescription": "¿Estás seguro de que quieres eliminar el tema {name}? Esta acción no se puede deshacer.",
+      "deletingTheme": "Eliminando tema...",
+      "deleteTheme": "Eliminar tema"
     },
     "commandPalette": {
       "title": "Paleta de Comandos",

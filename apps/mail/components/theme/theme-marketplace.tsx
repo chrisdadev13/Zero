@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
 import type { ThemeStyles } from "@/lib/themes";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -160,12 +160,17 @@ export function ThemeMarketplace() {
             />
             <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
                 {filtered.map((theme: PublicTheme) => (
-                    <ThemeCard
-                        key={theme.id}
-                        name={theme.name}
-                        styles={theme.styles[mode] ?? {}}
-                        onSelect={() => handleSelect(theme)}
-                    />
+                    <div key={theme.id} className="relative">
+                        <ThemeCard
+                            name={theme.name}
+                            styles={theme.styles[mode] ?? {}}
+                            onSelect={() => handleSelect(theme)}
+                        />
+                        {/* Marketplace badge */}
+                        <div className="absolute top-2 left-2 rounded-full bg-background/75 backdrop-blur-sm p-1">
+                            <ShoppingBag size={12} className="text-muted-foreground" />
+                        </div>
+                    </div>
                 ))}
             </div>
             {filtered.length === 0 && (
