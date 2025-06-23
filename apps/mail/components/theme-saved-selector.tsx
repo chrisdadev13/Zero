@@ -2,7 +2,6 @@ import { useTRPC } from "@/providers/query-provider";
 import { useEditorStore } from "@/store/editor-store";
 import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Switch } from "@/components/ui/switch";
 import { Globe2, Lock, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -32,7 +31,7 @@ type Theme = inferRouterOutputs<AppRouter>["themes"]["list"][number];
 
 export function UserThemeSelector() {
     const trpc = useTRPC();
-    const { themeState, setThemeState } = useEditorStore();
+    const { themeState, setThemeState, applyThemePreset } = useEditorStore();
     const t = useTranslations();
 
     const { data: themes = [], refetch, error, isLoading } = useQuery(trpc.themes.list.queryOptions());
@@ -182,24 +181,32 @@ export function UserThemeSelector() {
                                 <TooltipProvider delayDuration={300}>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            {isUpdating ? (
-                                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                            ) : (
-                                                <Switch
-                                                    checked={selectedTheme.public}
-                                                    onCheckedChange={togglePublic}
-                                                    disabled={isUpdating}
-                                                />
-                                            )}
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="secondary"
+                                                onClick={togglePublic}
+                                                disabled={isUpdating}
+                                                className="flex items-center gap-1"
+                                            >
+                                                {selectedTheme.public ? (
+                                                    <>
+                                                        <Globe2 size={14} />
+                                                        <span>Public</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Lock size={14} />
+                                                        <span>Private</span>
+                                                    </>
+                                                )}
+                                            </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             {selectedTheme.public ? "Make private" : "Make public"}
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-                                <span className="text-xs text-muted-foreground">
-                                    {selectedTheme.public ? t("common.themeEditor.public") : t("common.themeEditor.private")}
-                                </span>
                             </>
                         )}
                         <TooltipProvider delayDuration={300}>
@@ -251,6 +258,22 @@ export function UserThemeSelector() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
+
+                    {/* Reset to default button */}
+                    {themeState.id && (
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            className="mt-4"
+                            onClick={() => {
+                                applyThemePreset("default");
+                                setSelectedId("");
+                            }}
+                        >
+                            Reset to Default
+                        </Button>
+                    )}
                 </>
             )}
         </div>

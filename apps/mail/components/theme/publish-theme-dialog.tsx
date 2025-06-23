@@ -35,7 +35,7 @@ export function PublishThemeDialog({ open, onOpenChange, onPublish }: PublishThe
 
     return (
         <Dialog.Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.DialogContent className="sm:max-w-md">
+            <Dialog.DialogContent className="sm:max-w-md" showOverlay>
                 <Dialog.DialogHeader>
                     <Dialog.DialogTitle>Publish Theme</Dialog.DialogTitle>
                     <Dialog.DialogDescription>

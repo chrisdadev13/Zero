@@ -18,6 +18,7 @@ import { UserThemeSelector } from '@/components/theme-saved-selector';
 import { ThemeToggle } from '@/components/theme/toggle-theme';
 import { Link } from 'react-router';
 import { ThemeMarketplace } from '@/components/theme/theme-marketplace';
+import { PublishThemeDialog } from '@/components/theme/publish-theme-dialog';
 
 const formSchema = z.object({
   colorTheme: z.enum(['dark', 'light', 'system', '']),
@@ -67,6 +68,13 @@ export default function AppearancePage() {
       <SettingsCard
         title={t('pages.settings.appearance.title')}
         description={t('pages.settings.appearance.description')}
+        action={
+          <Link to="editor">
+            <Button variant="secondary" size="sm">
+              {t('common.themeEditor.createEditTheme')}
+            </Button>
+          </Link>
+        }
 
         footer={
           <Button type="submit" form="appearance-form" disabled={isSaving}>

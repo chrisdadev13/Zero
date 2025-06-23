@@ -150,11 +150,7 @@ export function ThemeMarketplace() {
             <div className="flex items-center justify-between">
                 <p className="text-lg font-medium">{t("common.themeEditor.marketplace")}</p>
                 <div>
-                    <Link to="editor">
-                        <Button variant="secondary" size="sm">
-                            {t('common.themeEditor.createEditTheme')}
-                        </Button>
-                    </Link>
+
                 </div>
             </div>
             <Input
