@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { useTranslations } from 'use-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 import { PublishThemeDialog } from '@/components/theme/publish-theme-dialog';
 
 export default function ThemeEditorPage() {
   const t = useTranslations();
-  const { themeState } = useEditorStore();
-  const { resetToCurrentPreset } = useEditorStore();
+  const { themeState, resetToCurrentPreset, setThemeState } = useEditorStore();
   const [dialogOpen, setDialogOpen] = useState(false);
   const trpc = useTRPC();
   const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
@@ -58,6 +58,23 @@ export default function ThemeEditorPage() {
           </div>
         }
       >
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium capitalize">Mode</span>
+          <ToggleGroup
+            type="single"
+            value={themeState.currentMode}
+            onValueChange={(val) =>
+              val &&
+              setThemeState({
+                ...themeState,
+                currentMode: val as 'light' | 'dark',
+              })
+            }
+          >
+            <ToggleGroupItem value="light">Light</ToggleGroupItem>
+            <ToggleGroupItem value="dark">Dark</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
         <ThemeEditorControls />
       </SettingsCard>
       <PublishThemeDialog
