@@ -1,6 +1,8 @@
 import { useEditorStore } from "@/store/editor-store";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { HexColorPicker } from "react-colorful";
 import * as culori from "culori";
 import { AlertTriangle } from "lucide-react";
 import { COMMON_STYLES } from "@/config/theme";
@@ -124,19 +126,28 @@ export default function ThemeEditorControls() {
                         }
 
                         return (
-                            <div key={k} className="flex items-center gap-3">
+                            <div
+                                key={k}
+                                className={`flex items-center justify-between gap-4 rounded-lg border p-3 transition-colors ${lowContrast ? "ring-2 ring-red-400/40" : "hover:bg-muted/30"}`}
+                            >
                                 <label className="w-32 text-sm capitalize" htmlFor={`color-${k}`}>
                                     {k.replace(/-/g, " ")}
                                 </label>
-                                <input
-                                    id={`color-${k}`}
-                                    type="color"
-                                    value={currentValue}
-                                    onChange={(e) => handleChange(k, e.target.value)}
-                                    className="h-8 w-10 border rounded"
-                                />
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            id={`color-${k}`}
+                                            style={{ backgroundColor: currentValue }}
+                                            className="h-10 w-10 shrink-0 cursor-pointer rounded-md border shadow-sm"
+                                            aria-label={`Pick ${k} color`}
+                                        />
+                                    </PopoverTrigger>
+                                    <PopoverContent side="right" align="start" className="w-auto p-4">
+                                        <HexColorPicker color={currentValue} onChange={(v) => handleChange(k, v)} />
+                                    </PopoverContent>
+                                </Popover>
                                 <Input
-                                    className="flex-1"
+                                    className="h-10 flex-1 text-sm"
                                     value={currentValue}
                                     onChange={(e) => handleChange(k, e.target.value)}
                                 />
@@ -181,7 +192,7 @@ export default function ThemeEditorControls() {
                 <Badge variant="secondary" className="px-3 py-1.5 capitalize">
                     {t("common.themeEditor.radiusLabel")}
                 </Badge>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 p-3 rounded-lg border">
                     <input
                         type="range"
                         min={0}
@@ -189,8 +200,9 @@ export default function ThemeEditorControls() {
                         step={0.125}
                         value={parseFloat(themeState.styles.light.radius.replace("rem", ""))}
                         onChange={(e) => handleChange("radius", `${e.target.value}rem`)}
+                        className="w-full h-2 cursor-pointer accent-primary"
                     />
-                    <span className="w-12 text-sm">{themeState.styles.light.radius}</span>
+                    <span className="w-14 text-sm text-right tabular-nums">{themeState.styles.light.radius}</span>
                 </div>
             </div>
         </div>
