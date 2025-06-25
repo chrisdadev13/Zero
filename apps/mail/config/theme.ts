@@ -51,6 +51,9 @@ export const defaultLightThemeStyles = {
     "chart-4": "oklch(0.49 0.22 264)",
     "chart-5": "oklch(0.42 0.18 266)",
     radius: "0.625rem",
+    mailPanel: "oklch(1 0 0)",
+    "mailPanel-foreground": "oklch(0.145 0 0)",
+    threadPanel: "oklch(1 0 0)",
     sidebar: "oklch(0.985 0 0)",
     "sidebar-foreground": "oklch(0.145 0 0)",
     "sidebar-primary": "oklch(0.205 0 0)",
@@ -101,9 +104,10 @@ export const defaultDarkThemeStyles = {
     "chart-3": "oklch(0.55 0.22 263)",
     "chart-4": "oklch(0.49 0.22 264)",
     "chart-5": "oklch(0.42 0.18 266)",
-    // Actual has radius but not in Expected, keeping it as is
     radius: "0.625rem",
-    // Converting sidebar-related variables to match Actual format
+    mailPanel: "oklch(0.205 0 0)",
+    "mailPanel-foreground": "oklch(0.985 0 0)",
+    threadPanel: "oklch(0.269 0 0)",
     sidebar: "oklch(0.205 0 0)",
     "sidebar-foreground": "oklch(0.985 0 0)",
     "sidebar-primary": "oklch(0.488 0.243 264.376)",
