@@ -79,7 +79,7 @@ export function ThemeCard({ name, styles, selected, onSelect }: ThemeCardProps) 
                             <span className="truncate text-sm font-medium">{name}</span>
                             <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
 
-                                <Link to="editor">
+                                <Link to="/mail/inbox?bgEditor=true">
                                     <span className="inline-flex h-6 w-6 items-center justify-center rounded hover:bg-muted">
                                         <Edit3 className="h-3 w-3" />
                                     </span>

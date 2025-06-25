@@ -37,7 +37,6 @@ export default [
       '(routes)/settings/layout.tsx',
       prefix('/settings', [
         index('(routes)/settings/page.tsx'),
-        route('/appearance/editor', '(routes)/settings/appearance/editor/page.tsx'),
         route('/appearance', '(routes)/settings/appearance/page.tsx'),
         route('/connections', '(routes)/settings/connections/page.tsx'),
         route('/danger-zone', '(routes)/settings/danger-zone/page.tsx'),

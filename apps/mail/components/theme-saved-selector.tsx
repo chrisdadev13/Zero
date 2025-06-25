@@ -227,10 +227,8 @@ export function UserThemeSelector() {
                                     {t("common.themeEditor.resetToDefault")}
                                 </Button>
                             )}
-
-                            {/* Edit theme */}
-                            <Link to="editor">
-                                <Button type="button" size="sm" variant="outline" className="flex items-center gap-1">
+                            <Link to="/mail/inbox?bgEditor=true">
+                                <Button type="button" size="sm" variant="secondary" className="flex items-center gap-1">
                                     <PenLine size={14} /> {t("common.themeEditor.editTheme")}
                                 </Button>
                             </Link>

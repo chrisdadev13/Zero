@@ -38,6 +38,7 @@ import { SunIcon } from '../icons/animated/sun';
 import { clear as idbClear } from 'idb-keyval';
 import { useTranslations } from 'use-intl';
 import { useTheme } from 'next-themes';
+import { useThemeEditor } from '../theme/theme-editor';
 import { useQueryState } from 'nuqs';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
@@ -47,7 +48,8 @@ export function NavUser() {
   const { data: session, refetch: refetchSession, isPending: isSessionPending } = useSession();
   const { data, refetch: refetchConnections } = useConnections();
   const [isRendered, setIsRendered] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
+  const { setOpen: openThemeEditor } = useThemeEditor();
   const t = useTranslations();
   const { state } = useSidebar();
   const trpc = useTRPC();
@@ -168,7 +170,7 @@ export function NavUser() {
   }, [data, activeAccount]);
 
   const handleThemeToggle = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    openThemeEditor(true);
   };
 
   if (!isRendered) return null;
@@ -350,11 +352,10 @@ export function NavUser() {
                 <div
                   key={activeAccount.id}
                   onClick={handleAccountSwitch(activeAccount.id)}
-                  className={`flex cursor-pointer items-center ${
-                    activeAccount.id === activeConnection?.id && data.connections.length > 1
+                  className={`flex cursor-pointer items-center ${activeAccount.id === activeConnection?.id && data.connections.length > 1
                       ? 'outline-mainBlue rounded-[5px] outline outline-2'
                       : ''
-                  }`}
+                    }`}
                 >
                   <div className="relative">
                     <Avatar className="size-6 rounded-[5px]">
@@ -389,11 +390,10 @@ export function NavUser() {
                   <TooltipTrigger asChild>
                     <div
                       onClick={handleAccountSwitch(connection.id)}
-                      className={`flex cursor-pointer items-center ${
-                        connection.id === activeConnection?.id && otherConnections.length > 1
+                      className={`flex cursor-pointer items-center ${connection.id === activeConnection?.id && otherConnections.length > 1
                           ? 'outline-mainBlue rounded-[5px] outline outline-2'
                           : ''
-                      }`}
+                        }`}
                     >
                       <div className="relative">
                         <Avatar className="size-7 rounded-[5px]">

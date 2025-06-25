@@ -64,7 +64,7 @@ import { useTranslations } from 'use-intl';
 import { useQueryState } from 'nuqs';
 import { useAtom } from 'jotai';
 import { toast } from 'sonner';
-import { BackgroundEditorPopup, BackgroundEditorToggleButton } from '../theme/background-editor';
+import { ThemeEditorPopup } from '../theme/theme-editor';
 
 interface ITag {
   id: string;
@@ -637,8 +637,7 @@ export function MailLayout() {
 
           <AISidebar />
           <AIToggleButton />
-          <BackgroundEditorPopup />
-          <BackgroundEditorToggleButton />
+          <ThemeEditorPopup />
         </ResizablePanelGroup>
       </div>
     </TooltipProvider>
