@@ -353,8 +353,8 @@ export function NavUser() {
                   key={activeAccount.id}
                   onClick={handleAccountSwitch(activeAccount.id)}
                   className={`flex cursor-pointer items-center ${activeAccount.id === activeConnection?.id && data.connections.length > 1
-                      ? 'outline-mainBlue rounded-[5px] outline outline-2'
-                      : ''
+                    ? 'outline-mainBlue rounded-[5px] outline outline-2'
+                    : ''
                     }`}
                 >
                   <div className="relative">
@@ -391,8 +391,8 @@ export function NavUser() {
                     <div
                       onClick={handleAccountSwitch(connection.id)}
                       className={`flex cursor-pointer items-center ${connection.id === activeConnection?.id && otherConnections.length > 1
-                          ? 'outline-mainBlue rounded-[5px] outline outline-2'
-                          : ''
+                        ? 'outline-mainBlue rounded-[5px] outline outline-2'
+                        : ''
                         }`}
                     >
                       <div className="relative">

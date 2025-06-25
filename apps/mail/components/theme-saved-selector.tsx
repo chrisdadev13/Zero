@@ -232,7 +232,6 @@ export function UserThemeSelector() {
                                     <PenLine size={14} /> {t("common.themeEditor.editTheme")}
                                 </Button>
                             </Link>
-
                             {/* Delete */}
                             <Button
                                 type="button"
