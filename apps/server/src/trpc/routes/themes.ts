@@ -1,7 +1,7 @@
 import z from "zod";
 import { getZeroDB } from "../../lib/server-utils";
 import { router, privateProcedure, activeConnectionProcedure } from "../trpc";
-import { themeStylesSchema } from "../../lib/themes";
+import { themeStylesSchema, type Theme } from "../../lib/themes";
 
 function assertCanPublish(isFork: boolean) {
     if (isFork) {
@@ -88,7 +88,12 @@ export const themesRouter = router({
     list: privateProcedure.query(async ({ ctx }) => {
         const db = getZeroDB(ctx.sessionUser.id);
         const themes = await db.findThemesByUser(ctx.sessionUser.id);
-        return themes;
+
+        if (!themes.length) {
+            return []
+        }
+
+        return themes as Theme[];
     }),
     listPublic: privateProcedure.input(z.object({
         page: z.number().optional().default(0),

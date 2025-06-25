@@ -50,7 +50,7 @@ export function UserThemeSelector() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [themeState.id]);
 
-    const selectedTheme = useMemo(() => (themes as Theme[]).find((t) => t.id === selectedId), [themes, selectedId]);
+    const selectedTheme = useMemo(() => (themes).find((t) => t.id === selectedId), [themes, selectedId]);
 
     // A theme cloned from someone else (has sourceThemeId) cannot be published/unpublished
     const canPublish = selectedTheme ? !selectedTheme.sourceThemeId : false;
@@ -150,7 +150,7 @@ export function UserThemeSelector() {
 
             {/* Saved themes as cards */}
             <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
-                {(themes as Theme[]).map((theme) => (
+                {themes.map((theme) => (
                     <div key={theme.id} className="relative">
                         <ThemeCard
                             name={theme.name}
@@ -270,10 +270,10 @@ export function UserThemeSelector() {
                                 <Button onClick={confirmDelete} disabled={isDeleting} variant="destructive">
                                     {isDeleting ? (
                                         <span className="flex items-center gap-2">
-                                            <Loader2 className="h-4 w-4 animate-spin" /> Deleting...
+                                            <Loader2 className="h-4 w-4 animate-spin" /> {t("common.themeEditor.deletingTheme")}
                                         </span>
                                     ) : (
-                                        "Delete"
+                                        t("common.themeEditor.deleteTheme")
                                     )}
                                 </Button>
                             </DialogFooter>
