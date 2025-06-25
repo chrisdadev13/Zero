@@ -94,6 +94,7 @@ export default {
       },
       fontFamily: {
         sans: [
+          'var(--font-sans)',
           '"Geist Variable"',
           'Geist',
           '-apple-system',
@@ -104,6 +105,7 @@ export default {
           ...defaultTheme.fontFamily.sans,
         ],
         mono: [
+          'var(--font-mono)',
           '"Geist Mono Variable"',
           '"Geist Mono"',
           'ui-monospace',
@@ -114,6 +116,10 @@ export default {
           'Menlo',
           'monospace',
           ...defaultTheme.fontFamily.mono,
+        ],
+        serif: [
+          'var(--font-serif)',
+          ...defaultTheme.fontFamily.serif,
         ],
       },
       keyframes: {
