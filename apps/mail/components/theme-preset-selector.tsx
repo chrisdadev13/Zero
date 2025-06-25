@@ -33,10 +33,10 @@ export function ThemePresetSelector() {
 
             <Select
                 onValueChange={(val) => applyThemePreset(val)}
-                value={themeState.preset}
+                value={themeState.preset && themeState.preset !== "default" ? themeState.preset : undefined}
             >
                 <SelectTrigger className="w-64 capitalize">
-                    <SelectValue placeholder={t("common.themeEditor.selectPreset")} />
+                    <SelectValue placeholder={t("common.themeEditor.selectTheme")} />
                 </SelectTrigger>
                 <SelectContent className="w-64">
                     {presetNames.map((name) => {

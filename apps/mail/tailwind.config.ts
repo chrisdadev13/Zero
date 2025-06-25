@@ -21,8 +21,8 @@ export default {
         lightBackground: '#FFFFFF',
         offsetDark: '#0A0A0A',
         offsetLight: '#F5F5F5',
-        panelDark: '#1A1A1A',
-        panelLight: '#FFFFFF',
+        panelDark: 'hsl(var(--background))',
+        panelLight: 'hsl(var(--background))',
         iconDark: '#898989',
         iconLight: '#6D6D6D',
         logout: '#D93036',
@@ -72,7 +72,7 @@ export default {
           '5': 'hsl(var(--chart-5))',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
+          DEFAULT: 'hsl(var(--sidebar))',
           foreground: 'hsl(var(--sidebar-foreground))',
           primary: 'hsl(var(--sidebar-primary))',
           'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
@@ -81,6 +81,11 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        mailPanel: {
+          DEFAULT: 'hsl(var(--mailPanel))',
+          foreground: 'hsl(var(--mailPanel-foreground))',
+        },
+        threadPanel: 'hsl(var(--threadPanel))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -89,6 +94,7 @@ export default {
       },
       fontFamily: {
         sans: [
+          'var(--font-sans)',
           '"Geist Variable"',
           'Geist',
           '-apple-system',
@@ -99,6 +105,7 @@ export default {
           ...defaultTheme.fontFamily.sans,
         ],
         mono: [
+          'var(--font-mono)',
           '"Geist Mono Variable"',
           '"Geist Mono"',
           'ui-monospace',
@@ -109,6 +116,10 @@ export default {
           'Menlo',
           'monospace',
           ...defaultTheme.fontFamily.mono,
+        ],
+        serif: [
+          'var(--font-serif)',
+          ...defaultTheme.fontFamily.serif,
         ],
       },
       keyframes: {

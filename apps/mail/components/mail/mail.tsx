@@ -64,6 +64,7 @@ import { useTranslations } from 'use-intl';
 import { useQueryState } from 'nuqs';
 import { useAtom } from 'jotai';
 import { toast } from 'sonner';
+import { ThemeEditorPopup } from '../theme/theme-editor';
 
 interface ITag {
   id: string;
@@ -391,7 +392,7 @@ export function MailLayout() {
 
   const activeAccount = useMemo(() => {
     if (!activeConnection?.id || !connections?.connections) return null;
-    return connections.connections.find((connection) => connection.id === activeConnection?.id);
+    return connections.connections.find((connection: any) => connection.id === activeConnection?.id);
   }, [activeConnection?.id, connections?.connections]);
 
   useEffect(() => {
@@ -476,9 +477,12 @@ export function MailLayout() {
             minSize={35}
             maxSize={35}
             className={cn(
-              `bg-panelLight dark:bg-panelDark mb-1 mr-[3px] w-fit shadow-sm md:rounded-2xl lg:flex lg:h-[calc(100dvh-8px)] lg:shadow-sm`,
+              `bg-mailPanel text-mailPanel-foreground mb-1 mr-[3px] w-fit shadow-sm md:rounded-2xl lg:flex lg:h-[calc(100dvh-8px)] lg:shadow-sm`,
               isDesktop && threadId && 'hidden lg:block',
             )}
+            style={{
+              '--muted-foreground': 'var(--mailPanel-foreground)',
+            } as React.CSSProperties}
             onMouseEnter={handleMailListMouseEnter}
             onMouseLeave={handleMailListMouseLeave}
           >
@@ -607,7 +611,7 @@ export function MailLayout() {
           {isDesktop && (
             <ResizablePanel
               className={cn(
-                'bg-panelLight dark:bg-panelDark mb-1 mr-0.5 w-fit rounded-2xl shadow-sm lg:h-[calc(100dvh-8px)]',
+                'bg-panelLight mb-1 mr-0.5 w-fit rounded-2xl shadow-sm lg:h-[calc(100dvh-8px)]',
                 // Only show on md screens and larger when there is a threadId
                 !threadId && 'hidden lg:block',
               )}
@@ -622,7 +626,7 @@ export function MailLayout() {
 
           {/* Mobile Thread View */}
           {isMobile && threadId && (
-            <div className="bg-panelLight dark:bg-panelDark fixed inset-0 z-50">
+            <div className="bg-threadPanel fixed inset-0 z-50">
               <div className="flex h-full flex-col">
                 <div className="h-full overflow-y-auto outline-none">
                   <ThreadDisplay />
@@ -633,6 +637,7 @@ export function MailLayout() {
 
           <AISidebar />
           <AIToggleButton />
+          <ThemeEditorPopup />
         </ResizablePanelGroup>
       </div>
     </TooltipProvider>
@@ -824,8 +829,8 @@ export const Categories = () => {
   const t = useTranslations();
   const defaultCategoryIdInner = useDefaultCategoryId()
   const categorySettings = useCategorySettings();
-  const [activeCategory] = useQueryState('category',{
-     defaultValue: defaultCategoryIdInner,
+  const [activeCategory] = useQueryState('category', {
+    defaultValue: defaultCategoryIdInner,
   });
 
   const categories = categorySettings.map((cat) => {
