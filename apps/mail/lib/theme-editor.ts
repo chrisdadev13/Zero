@@ -4,8 +4,7 @@ export interface BaseEditorState {
     styles: ThemeStyles;
 }
 
-export interface EditorControls {
-}
+export type EditorControls = {}
 
 export interface EditorPreviewProps {
     styles: ThemeStyles;
