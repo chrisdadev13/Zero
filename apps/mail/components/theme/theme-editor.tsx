@@ -39,6 +39,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { PublishThemeDialog } from "./publish-theme-dialog";
 
 type TargetKey =
     | "background"
@@ -180,6 +181,7 @@ function ThemeEditor() {
     const { mutateAsync: createTheme } = useMutation(trpc.themes.create.mutationOptions());
 
     const [isSaving, setIsSaving] = useState(false);
+    const [publishDialogOpen, setPublishDialogOpen] = useState(false);
 
     useEffect(() => {
         const parsedRadius = parseFloat(themeState.styles.light.radius.replace("rem", ""));
@@ -224,15 +226,12 @@ function ThemeEditor() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [(themeState.styles.light)["font-sans"]]);
 
-    const handleSaveTheme = async () => {
-        const name = prompt("Enter a name for your theme")?.trim();
-        if (!name) return;
-
+    const handlePublishTheme = async ({ name }: { name: string }) => {
         setIsSaving(true);
         try {
             const newTheme = await createTheme({
                 theme: {
-                    name,
+                    name: name.trim(),
                     styles: themeState.styles,
                     public: false,
                 },
@@ -243,6 +242,8 @@ function ThemeEditor() {
             queryClient.invalidateQueries({ queryKey: trpc.themes.list.queryKey() });
 
             toast.success("Theme saved");
+
+            setPublishDialogOpen(false);
         } catch (err) {
             console.error("Failed to save theme", err);
             toast.error("Failed to save theme");
@@ -371,16 +372,16 @@ function ThemeEditor() {
                 />
             </TabsContent>
             <div className="flex justify-end border-t border-border p-4">
-                <Button onClick={handleSaveTheme} disabled={isSaving}>
-                    {isSaving ? (
-                        <span className="flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" /> Saving...
-                        </span>
-                    ) : (
-                        "Save Theme"
-                    )}
+                <Button onClick={() => setPublishDialogOpen(true)} disabled={isSaving}>
+                    Save Theme
                 </Button>
             </div>
+
+            <PublishThemeDialog
+                open={publishDialogOpen}
+                onOpenChange={setPublishDialogOpen}
+                onPublish={handlePublishTheme}
+            />
         </Tabs>
     );
 }
@@ -391,9 +392,13 @@ export function useThemeEditor() {
 
     const setOpen = (state: boolean) => {
         if (state) {
-            setOpenQuery('true').catch(console.error);
+            setOpenQuery('true').catch((err) => {
+                toast.error("Failed to open theme editor");
+            });
         } else {
-            setOpenQuery(null).catch(console.error);
+            setOpenQuery(null).catch((err) => {
+                toast.error("Failed to close theme editor");
+            });
         }
     };
 
